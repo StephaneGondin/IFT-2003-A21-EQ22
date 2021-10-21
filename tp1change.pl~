@@ -14,37 +14,34 @@ etat_final(). %???
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 
-etat_initialdeux([['1','|','|','|','|','|'],
+etat_initialdeux(['1','|','|','|','|','|'],
                         ['2','|','|','|','|','|'],
                         ['3','|','|','|','|','|'],
                         ['4','|','|','|','|','|'],
                         ['5','|','|','|','|','|'],
                         ['6','|','|','|','|','|'],
-                        ['7','|','|','|','|','|']]).
+                        ['7','|','|','|','|','|']).
 
 %%%
-%Appel
+% Appel Du Jeux dans la fonction jeux . Le jeux se passe les colone et
+% appelle les fonction du joeur a l'AI. Les condition de validation sont
+% Ègalemen appelÈ dans la mouvement.
 %
-%%% etat_initialdeux(X).
+%
 %%%
-%
-%
-%
-jeux:- etat_initialdeux(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
+
+jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
            voirboard(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
            valider_place_disponible(Un).
+
+
+
+
 
 voirboard(Un,Deux,Trois,Quatre,Cinq,Six,Sept):-voir(Un),voir(Deux),voir(Trois),voir(Quatre),voir(Cinq),voir(Six),voir(Sept).
 
 voir(X):- write(X),nl.
-voir(N,Colone):- voir([N|Colone]),nl,write('non').
 
-%voir(N,Colone):- realligne([X, 1]),nl,write('non').
-
-
-
-readligne([],_).
-readligne([X|Emplacement],[Colone|Info]):- write(X),nl, write('fin '),readligne(Emplacement,Info).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Pr√©dicats
@@ -53,7 +50,7 @@ readligne([X|Emplacement],[Colone|Info]):- write(X),nl, write('fin '),readligne(
 placer_jeton(Colonne, CouleurJeton, [ CouleurJeton | Colonne]):- valider_place_disponible(Colonne).
 
 %Valider s'il reste de la place dans une colonne pour placer une pi√®ce.
-valider_place_disponible(Colonne):- length(Colonne, N), N < 7.
+valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write(N).
 
 
 valider_verticale().
