@@ -35,9 +35,8 @@ jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
            question_utilisateur(Reponse),
            swap(Un,Deux,Trois,Quatre,Cinq,Six,Sept,Reponse,Retour),
            voir(Retour,' retour 1 fois'),
-           voir(Retour,'retour 2 fois'),
            valider_place_disponible(Retour),
-           placer_jeton(Retour,'a',Retour).
+           placer_jeton(Retour,jeton(rouge)).
 
 
 
@@ -51,6 +50,16 @@ jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
 voirboard(Un,Deux,Trois,Quatre,Cinq,Six,Sept):-voir(Un,'1'),voir(Deux,'2'),voir(Trois,'3'),voir(Quatre,'4'),voir(Cinq,'5'),voir(Six,'6'),voir(Sept,'7').
 
 voir(X,Lettre):- write(X),write(Lettre),nl.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Swap semble long comme fonction, mais elle est bien simple. Elle
+% recoit les colonnes en parametres. Elle recoit le parametre Y, qui
+% proviens de l'utilisateur (un '1','2',etc) et retourne la colone dans
+% Retour. On fait afficher la ligne grace a voir pour avoir un visuel.
+% ex: Si Y==1 va a voir(Un,'1') et le retour de la colone  est Retour=Un
+% ==== Elle nous permet a partir de chiffre de selectionner les colonne
+% avec des noms dans la variable Retour===
 
 swap(Un,Deux,Trois,Quatre,Cinq,Six,Sept,Y,Retour):- (Y==1,voir(Un,'1'),Retour=Un;Y==2,voir(Deux,'2'),Retour=Deux;Y==3,voir(Trois,'3'),Retour=Trois;Y==4,voir(Quatre,'4'),Retour=Quatre;Y==5,voir(Cinq,'5'),Retour=Cinq;Y==6,voir(Six,'1'),Retour=Six;Y==7,voir(Sept,'7'),Retour=Sept).
 
@@ -69,7 +78,7 @@ verifier_reponse(Reponse):-((Reponse=1);(Reponse=2);(Reponse=3);(Reponse=4);(Rep
 %Prédicats
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Place un jeton dans la colonne s'il y a une place disponible.
-placer_jeton(Colonne, CouleurJeton, [ CouleurJeton | Colonne]):- valider_place_disponible(Colonne).
+placer_jeton(Colonne,Jeton):-append(Colonne,Jeton).
 
 %Valider s'il reste de la place dans une colonne pour placer une pièce.
 %retourne true ou false
