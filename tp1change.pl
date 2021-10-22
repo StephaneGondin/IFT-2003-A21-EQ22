@@ -34,9 +34,9 @@ jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
            voirboard(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
            question_utilisateur(Reponse),
            swap(Un,Deux,Trois,Quatre,Cinq,Six,Sept,Reponse,Retour),
-           voir(Retour,'t'),
+           voir(Retour,' retour 1 fois'),
+           voir(Retour,'retour 2 fois'),
            valider_place_disponible(Retour),
-           voir(Retour,'est'),
            placer_jeton(Retour,'a',Retour).
 
 
@@ -73,7 +73,7 @@ placer_jeton(Colonne, CouleurJeton, [ CouleurJeton | Colonne]):- valider_place_d
 
 %Valider s'il reste de la place dans une colonne pour placer une pièce.
 %retourne true ou false
-valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write(N).
+valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write('place disponible dans la colone: '),write(N).
 
 
 valider_verticale().
