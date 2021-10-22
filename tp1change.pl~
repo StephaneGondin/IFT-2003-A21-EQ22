@@ -23,17 +23,22 @@ etat_initialdeux(['1','|','|','|','|','|'],
                         ['7','|','|','|','|','|']).
 
 %%%
-% Appel Du Jeux dans la fonction jeux . Le jeux se passe les colone et
-% appelle les fonction du joeur a l'AI. Les condition de validation sont
-% égalemen appelé dans la mouvement.
+% Appel Du Jeux dans la fonction jeux . Le jeux se passe les parametres
+% colonne et appelle les fonctions du joueur a l'IA. Les conditions de
+% validation sont également appelées dans le mouvement.
 %
-% parametre a envoyer : 7 colones
+% paramètre a envoyer : 7 colonnes
 %%%
 
 jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
            voirboard(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
-           valider_place_disponible(Un),
-           question_utilisateur(Reponse).
+           question_utilisateur(Reponse),
+           swap(Un,Deux,Trois,Quatre,Cinq,Six,Sept,Reponse,Retour),
+           voir(Retour,'t'),
+           valider_place_disponible(Retour),
+           voir(Retour,'est').
+           placer_jeton(Retour,'a',Retour).
+
 
 
 
@@ -47,14 +52,17 @@ voirboard(Un,Deux,Trois,Quatre,Cinq,Six,Sept):-voir(Un,'1'),voir(Deux,'2'),voir(
 
 voir(X,Lettre):- write(X),write(Lettre),nl.
 
+swap(Un,Deux,Trois,Quatre,Cinq,Six,Sept,Y,Retour):- (Y==1,voir(Un,'1'),Retour=Un;Y==2,voir(Deux,'2'),Retour=Deux;Y==3,voir(Trois,'3'),Retour=Trois;Y==4,voir(Quatre,'4'),Retour=Quatre;Y==5,voir(Cinq,'5'),Retour=Cinq;Y==6,voir(Six,'1'),Retour=Six;Y==7,voir(Sept,'7'),Retour=Sept).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Questioner l'utilisateur sur son emplacement a mettre
 % Parametre a prendre en charges: reponse utilisateur, retourne la
-% colone
+% colone. 1 a 7 seulement considere.
 % %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-question_utilisateur(Reponse):-write('quelle colone desirez-vous jouer: (reponse sous forme 1. 2. 3. 4. 5. 6. 7.'),read(Reponse),verifier_reponse(Reponse).
-verifier_reponse(Reponse):-((Reponse=1);(Reponse=2);(Reponse=3);(Reponse=4);(Reponse=5);(Reponse=6);(Reponse=7)),write(Reponse).
+question_utilisateur(Reponse):-write('quelle colone desirez-vous jouer: (reponse sous forme 1. 2. 3. 4. 5. 6. 7.)'),read(Reponse),verifier_reponse(Reponse).
+verifier_reponse(Reponse):-((Reponse=1);(Reponse=2);(Reponse=3);(Reponse=4);(Reponse=5);(Reponse=6);(Reponse=7)),write('votre reponse:'),write(Reponse),nl.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
