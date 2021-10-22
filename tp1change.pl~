@@ -81,6 +81,9 @@ swap(Un,Deux,Trois,Quatre,Cinq,Six,Sept,Y,Retour):- (Y==1,voir(Un,'1'),Retour=Un
 %Questioner l'utilisateur sur son emplacement a mettre
 % Parametre a prendre en charges: reponse utilisateur, retourne la
 % colone. 1 a 7 seulement considere.
+% La fonction verifier reponse s'assurer que la reponse correspond au
+% bon parametre et ensuite affiche la reponse au client. Si ce n'est pas
+% le cas, elle echoue et on obtient un false.
 % %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 question_utilisateur(Reponse):-write('quelle colone desirez-vous jouer: reponse sous forme 1. 2. 3. 4. 5. 6. 7.'),write(' une autre reponse arrete le jeu:'),nl,read(Reponse),verifier_reponse(Reponse).
