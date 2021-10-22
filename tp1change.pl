@@ -30,15 +30,29 @@ etat_initialdeux(['1','|','|','|','|','|'],
 % param�tre a envoyer : 7 colonnes
 %%%
 
-jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
-           voirboard(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
-           question_utilisateur(Reponse),
-           swap(Un,Deux,Trois,Quatre,Cinq,Six,Sept,Reponse,Retour),
-           voir(Retour,' retour 1 fois'),
-           valider_place_disponible(Retour),
-           placer_jeton(Retour,jeton(rouge)).
+jeux:- etat_initialdeux(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
+            jeux_recurrent(Un,Deux,Trois,Quatre,Cinq,Six,Sept).
 
 
+      %     voirboard(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
+       %    question_utilisateur(Reponse),
+       %    swap(Un,Deux,Trois,Quatre,Cinq,Six,Sept,Reponse,Retour),
+       %    voir(Retour,' retour 1 fois'),
+       %    valider_place_disponible(Retour),
+       %    placer_jeton(Retour,jeton(rouge),Resultat),
+       %    write(Resultat).
+
+
+
+
+jeux_recurrent(Un,Deux,Trois,Quatre,Cinq,Six,Sept):-voirboard(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
+                                                    question_utilisateur(Reponse),
+                                                    swap(Un,Deux,Trois,Quatre,Cinq,Six,Sept,Reponse,Retour),
+                                                    valider_place_disponible(Retour),
+                                                    placer_jeton(Retour,jeton(rouge),Resultat),
+                                                    voir(Resultat,'resultat insertion'),
+                                                    voir(Retour,'retour '),
+                                                    jeux_recurrent(Un,Deux,Trois,Quatre,Cinq,Six,Sept).
 
 
 
@@ -67,9 +81,12 @@ swap(Un,Deux,Trois,Quatre,Cinq,Six,Sept,Y,Retour):- (Y==1,voir(Un,'1'),Retour=Un
 %Questioner l'utilisateur sur son emplacement a mettre
 % Parametre a prendre en charges: reponse utilisateur, retourne la
 % colone. 1 a 7 seulement considere.
+% La fonction verifier reponse s'assurer que la reponse correspond au
+% bon parametre et ensuite affiche la reponse au client. Si ce n'est pas
+% le cas, elle echoue et on obtient un false.
 % %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-question_utilisateur(Reponse):-write('quelle colone desirez-vous jouer: (reponse sous forme 1. 2. 3. 4. 5. 6. 7.)'),read(Reponse),verifier_reponse(Reponse).
+question_utilisateur(Reponse):-write('quelle colone desirez-vous jouer: reponse sous forme 1. 2. 3. 4. 5. 6. 7.'),write(' une autre reponse arrete le jeu:'),nl,read(Reponse),verifier_reponse(Reponse).
 verifier_reponse(Reponse):-((Reponse=1);(Reponse=2);(Reponse=3);(Reponse=4);(Reponse=5);(Reponse=6);(Reponse=7)),write('votre reponse:'),write(Reponse),nl.
 
 
@@ -78,11 +95,11 @@ verifier_reponse(Reponse):-((Reponse=1);(Reponse=2);(Reponse=3);(Reponse=4);(Rep
 %Prédicats
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Place un jeton dans la colonne s'il y a une place disponible.
-placer_jeton(Colonne,Jeton):-append(Colonne,Jeton).
+placer_jeton(Colonne,Jeton,Resultat):-append(Colonne,Jeton,Resultat).
 
 %Valider s'il reste de la place dans une colonne pour placer une pièce.
 %retourne true ou false
-valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write('place disponible dans la colone: '),write(N).
+valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write('longeur dans la colone: '),write(N).
 
 
 valider_verticale().
