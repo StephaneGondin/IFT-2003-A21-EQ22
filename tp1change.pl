@@ -14,13 +14,6 @@ etat_final(). %???
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 
-etat_initialdeux(['1','|','|','|','|','|'],
-                        ['2','|','|','|','|','|'],
-                        ['3','|','|','|','|','|'],
-                        ['4','|','|','|','|','|'],
-                        ['5','|','|','|','|','|'],
-                        ['6','|','|','|','|','|'],
-                        ['7','|','|','|','|','|']).
 
 %%%
 % Appel Du Jeux dans la fonction jeux . Le jeux se passe les parametres
@@ -94,6 +87,13 @@ voir(X,Lettre):- write(X),write(Lettre),nl.
 %
 swap(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,replace_list(C1,Retour),!;Y==2,replace_list(C2,Retour),!;Y==3,replace_list(C3,Retour),!;Y==4,replace_list(C4,Retour),!;Y==5,replace_list(C5,Retour),!;Y==6,replace_list(C6,Retour),!;Y==7,replace_list(C7,Retour),!.
 
+
+%%%%%%%%%%%%%%%%%%%
+%ZONE AI
+%
+%%%%%%%%%%%%%%%%%%%
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Transfert_Ai est similaire a swap, elle transfert ‡ l'AI la matrice
 % modifiÈ plutot que le parametre C% original. Ca permet la recursivite
@@ -102,9 +102,49 @@ swap(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,replace_list(C1,Retour),!;Y==2,replac
 transfert_AI(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,jeux_AI(Retour,C2,C3,C4,C5,C6,C7),!;Y==2,jeux_AI(C1,Retour,C3,C4,C5,C6,C7),!;Y==3,jeux_AI(C1,C2,Retour,C4,C5,C6,C7),!;Y==4,jeux_AI(C1,C2,C3,Retour,C5,C6,C7),!;Y==5,jeux_AI(C1,C2,C3,C4,Retour,C6,C7),!;Y==6,jeux_AI(C1,C2,C3,C4,C5,Retour,C7),!;Y==7,jeux_AI(C1,C2,C3,C4,C5,C6,Retour),!.
 
 
+%%%%%%%%%%%%
+%Fonction du tour Ë l'ordinateur
+%
+%
+%%%%%%
+
+jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),%placer_jeton(C1,['J'],Temporaire),
+                               append([],[C1,C2,C3,C4,C5,C6,C7],Matrice),nl,voir(Matrice,'La matrice :  '),nl,vgagne('R',Matrice);write('non'),
+
+                               jeux_recurrent(C1,C2,C3,C4,C5,C6,C7).
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+vgagne(Couleur,Mat):-
+               append(_, [Colonne|_], Mat),
+               append(_,[Couleur,Couleur,Couleur,Couleur|_],Colonne),write('Ce joeur a gagne:'),nl,write(Couleur).
+
+vgagne(Couleur,Mat):-
+                 append(_,[Colonne1,Colonne2,Colonne3,Colonne4|_],Mat),
+                 append(Vide1,[Couleur|_],Colonne1),write('vid1'),nl,write(Colonne1),
+                 append(Vide2,[Couleur|_],Colonne2),write('vid1'),nl,write(Colonne2),
+                 append(Vide3,[Couleur|_],Colonne3),write('vid1'),nl,write(Colonne3),
+                 append(Vide4,[Couleur|_],Colonne4),write('vid1'),nl,write(Colonne4),
+                 (length(Vide1,N), length(Vide2,N), length(Vide3,N), length(Vide4,N)),write('Ce joeur a gagne:'),nl,write(Couleur).
+
+
+
+ vgagne(Couleur,Mat):-
+                 append(_,[Colonne1,Colonne2,Colonne3,Colonne4|_],Mat),
+                 append(Vide1,[Couleur|_],Colonne1),write('vid1'),nl,write(Colonne1),
+                 append(Vide2,[Couleur|_],Colonne2),write('vid1'),nl,write(Colonne2),
+                 append(Vide3,[Couleur|_],Colonne3),write('vid1'),nl,write(Colonne3),
+                 append(Vide4,[Couleur|_],Colonne4),write('vid1'),nl,write(Colonne4),
+                 length(Vide1,N)= N1, length(Vide2,N)= N2, length(Vide3,N)= N3, length(Vide4,N)= N4,N2 is N1+1,N3 is N2+1,N4 is N3+1,write('Ce joeur a gagne:'),nl,write(Couleur).
+
+
+
+
+
+
+                 %
+                 %
+                 %
+%%%%%%%%%%%%%%%%%%%%%%%%
 %Questioner l'utilisateur sur son emplacement a mettre
 % Parametre a prendre en charges: reponse utilisateur, retourne la
 % colone. 1 a 7 seulement considere.
@@ -130,9 +170,10 @@ conc([], L, L).
 conc([X|R1], L2, [X|R3]):- conc(R1, L2, R3).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Pr√©dicats
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Place un jeton dans la colonne s'il y a une place disponible.
+% Placer_Jeton fonction qui place un jeton si il reste de la place sinon
+% retourne false pour le moment.
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Place un jeton dans la colonne s'il y a une place disponible.
 placer_jeton(Colonne,Jeton,Resultat):-conc(Colonne,Jeton,Resultat),valider_place_disponible(Colonne).
 
 %Valider s'il reste de la place dans une colonne pour placer une pi√®ce.
@@ -141,14 +182,6 @@ valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write('pieces dans
 
 
 
-%%%%%%%%%%%%
-%Fonction du tour Ë l'ordinateur
-%
-%
-%%%%%%
-
-jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),%placer_jeton(C1,['J'],Temporaire),
-                               jeux_recurrent(C1,C2,C3,C4,C5,C6,C7).
 
 valider_verticale().
 valider_horizontale().
