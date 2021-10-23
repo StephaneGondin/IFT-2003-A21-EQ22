@@ -109,9 +109,7 @@ transfert_AI(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,jeux_AI(Retour,C2,C3,C4,C5,C6
 %%%%%%
 
 jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),%placer_jeton(C1,['J'],Temporaire),
-                               append([],[C1,C2,C3,C4,C5,C6,C7],Matrice),nl,voir(Matrice,'La matrice :  '),nl,vgagne('R',Matrice);write('non'),
-
-                               jeux_recurrent(C1,C2,C3,C4,C5,C6,C7).
+                               append([],[C1,C2,C3,C4,C5,C6,C7],Matrice),nl,voir(Matrice,'La matrice :  '),nl,vgagne('R',Matrice);write('non'),                               jeux_recurrent(C1,C2,C3,C4,C5,C6,C7).
 
 
 vgagne(Couleur,Mat):-
@@ -120,21 +118,22 @@ vgagne(Couleur,Mat):-
 
 vgagne(Couleur,Mat):-
                  append(_,[Colonne1,Colonne2,Colonne3,Colonne4|_],Mat),
-                 append(Vide1,[Couleur|_],Colonne1),write('vid1'),nl,write(Colonne1),
-                 append(Vide2,[Couleur|_],Colonne2),write('vid1'),nl,write(Colonne2),
-                 append(Vide3,[Couleur|_],Colonne3),write('vid1'),nl,write(Colonne3),
-                 append(Vide4,[Couleur|_],Colonne4),write('vid1'),nl,write(Colonne4),
+                 append(Vide1,[Couleur|_],Colonne1),
+                 append(Vide2,[Couleur|_],Colonne2),
+                 append(Vide3,[Couleur|_],Colonne3),
+                 append(Vide4,[Couleur|_],Colonne4),
                  (length(Vide1,N), length(Vide2,N), length(Vide3,N), length(Vide4,N)),write('Ce joeur a gagne:'),nl,write(Couleur).
 
 
 
- vgagne(Couleur,Mat):-
-                 append(_,[Colonne1,Colonne2,Colonne3,Colonne4|_],Mat),
-                 append(Vide1,[Couleur|_],Colonne1),write('vid1'),nl,write(Colonne1),
-                 append(Vide2,[Couleur|_],Colonne2),write('vid1'),nl,write(Colonne2),
-                 append(Vide3,[Couleur|_],Colonne3),write('vid1'),nl,write(Colonne3),
-                 append(Vide4,[Couleur|_],Colonne4),write('vid1'),nl,write(Colonne4),
-                 length(Vide1,N)= N1, length(Vide2,N)= N2, length(Vide3,N)= N3, length(Vide4,N)= N4,N2 is N1+1,N3 is N2+1,N4 is N3+1,write('Ce joeur a gagne:'),nl,write(Couleur).
+% vgagne(Couleur,Mat):-
+%                 append(_,[Colonne1,Colonne2,Colonne3,Colonne4|_],Mat),
+%                 append(Vide1,[Couleur|_],Colonne1),write('vid1'),nl,write(Colonne1),
+%
+ %                append(Vide2,[Couleur|_],Colonne2),write('vid1'),nl,write(Colonne2),
+ %                append(Vide3,[Couleur|_],Colonne3),write('vid1'),nl,write(Colonne3),
+ %                append(Vide4,[Couleur|_],Colonne4),write('vid1'),nl,write(Colonne4),
+ %                length(Vide1,N)= N1, length(Vide2,N)= N2, length(Vide3,N)= N3, length(Vide4,N)= N4,N2 is N1+1,N3 is N2+1,N4 is N3+1,write('Ce joeur a gagne:'),nl,write(Couleur).
 
 
 
