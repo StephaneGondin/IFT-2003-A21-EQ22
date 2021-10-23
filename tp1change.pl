@@ -138,7 +138,7 @@ placer_jeton(Colonne,Jeton,Resultat):-conc(Colonne,Jeton,Resultat),valider_place
 
 %Valider s'il reste de la place dans une colonne pour placer une pièce.
 %retourne true ou false
-valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write('longeur dans la colone: '),write(N).
+valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write('pieces dans la colone avant ajout: '),write(N),nl.
 
 
 

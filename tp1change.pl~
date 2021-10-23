@@ -48,7 +48,7 @@ jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
 
 
 
-jeux_recurrent(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),
+jeux_recurrent(C1,C2,C3,C4,C5,C6,C7):-%voirboard(C1,C2,C3,C4,C5,C6,C7),
                                                   %fonction tour utilisateur
                                                     question_utilisateur(Reponse),
 
@@ -138,7 +138,7 @@ placer_jeton(Colonne,Jeton,Resultat):-conc(Colonne,Jeton,Resultat),valider_place
 
 %Valider s'il reste de la place dans une colonne pour placer une pièce.
 %retourne true ou false
-valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write('longeur dans la colone: '),write(N).
+valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write('longeur dans la colone avant ajout: '),write(N),nl.
 
 
 
