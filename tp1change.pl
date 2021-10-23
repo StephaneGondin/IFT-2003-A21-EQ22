@@ -30,7 +30,7 @@ etat_initialdeux(['1','|','|','|','|','|'],
 % paramètre a envoyer : 7 colonnes
 %%%
 
-jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
+jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),write('     PROLOG     '),nl,nl,write('    EQUIPE 22     '),nl,nl,
             jeux_recurrent(Un,Deux,Trois,Quatre,Cinq,Six,Sept).
            % replace_list(Deux,Test),write(Test),write(Deux),conc(Un,Deux,Test),conc(Test,['1|'],Sad),write(Sad),conc(Test,['1|'],Sad),write(Sad),
            % nl,nl,voirboard(Un,Deux,Trois,Sad,Cinq,Six,Sept).
@@ -87,23 +87,22 @@ voir(X,Lettre):- write(X),write(Lettre),nl.
 % recoit les colonnes en parametres. Elle recoit le parametre Y, qui
 % proviens de l'utilisateur (un '1','2',etc) et retourne la colone dans
 % Retour. On fait afficher la ligne grace a voir pour avoir un visuel.
-% ex: Si Y==1 va a voir(Un,'1') et le retour de la colone  est Retour=Un
-% ==== Elle nous permet a partir de chiffre de selectionner les colonne
-% avec des noms dans la variable Retour===
-
-% swap(Un,Deux,Trois,Quatre,Cinq,Six,Sept,Y,Retour):-
-% (Y==1,voir(Un,'1'),Retour=Un;Y==2,voir(Deux,'2'),Retour=Deux;Y==3,voir(Trois,'3'),Retour=Trois;Y==4,voir(Quatre,'4'),Retour=Quatre;Y==5,voir(Cinq,'5'),Retour=Cinq;Y==6,voir(Six,'1'),Retour=Six;Y==7,voir(Sept,'7'),Retour=Sept).
+% ex: Si Y==1 , Retour sera l'équivalent de la Liste C1
+% ==== Elle nous permet a partir de chiffre de selectionner les
+% colonne, le ! arrete la fonction apres avoir trouvé le Y, sans
+% continuer dans la recherche vu que c'est des ou=
 %
 swap(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,replace_list(C1,Retour),!;Y==2,replace_list(C2,Retour),!;Y==3,replace_list(C3,Retour),!;Y==4,replace_list(C4,Retour),!;Y==5,replace_list(C5,Retour),!;Y==6,replace_list(C6,Retour),!;Y==7,replace_list(C7,Retour),!.
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Transfert_Ai est similaire a swap, elle transfert à l'AI la matrice
+% modifié plutot que le parametre C% original. Ca permet la recursivite
+% de continuer. Retour est envoye a différent endroit selon le parametre
+% Y. ! arrete la recherche.
 transfert_AI(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,jeux_AI(Retour,C2,C3,C4,C5,C6,C7),!;Y==2,jeux_AI(C1,Retour,C3,C4,C5,C6,C7),!;Y==3,jeux_AI(C1,C2,Retour,C4,C5,C6,C7),!;Y==4,jeux_AI(C1,C2,C3,Retour,C5,C6,C7),!;Y==5,jeux_AI(C1,C2,C3,C4,Retour,C6,C7),!;Y==6,jeux_AI(C1,C2,C3,C4,C5,Retour,C7),!;Y==7,jeux_AI(C1,C2,C3,C4,C5,C6,Retour),!.
 
 
 
-% transfert_AI(Un,Deux,Trois,Quatre,Cinq,Six,Sept,Y,Retour):-
-% Y==1,replace_list(Retour,Un);Y==2,replace_list(Retour,Deux);Y==3,replace_list(Retour,Trois);Y==4,replace_list(Retour,Quatre);Y==5,replace_list(Retour,Cinq);Y==6,replace_list(Retour,Six);Y==7,replace_list(Retour,Sept),!.
-%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Questioner l'utilisateur sur son emplacement a mettre
@@ -114,8 +113,8 @@ transfert_AI(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,jeux_AI(Retour,C2,C3,C4,C5,C6
 % le cas, elle echoue et on obtient un false.
 % %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-question_utilisateur(Reponse):-write('quelle colone desirez-vous jouer: reponse sous forme 1. 2. 3. 4. 5. 6. 7.'),write(' une autre reponse arrete le jeu:'),nl,read(Reponse),verifier_reponse(Reponse).
-verifier_reponse(Reponse):-((Reponse=1);(Reponse=2);(Reponse=3);(Reponse=4);(Reponse=5);(Reponse=6);(Reponse=7)),write('votre reponse:'),write(Reponse),nl.
+question_utilisateur(Reponse):-write('Placer votre pièce: reponse sous forme 1. 2. 3. 4. 5. 6. 7.'),write(' une autre reponse arrete le jeu:'),nl,read(Reponse),verifier_reponse(Reponse).
+verifier_reponse(Reponse):-((Reponse=1);(Reponse=2);(Reponse=3);(Reponse=4);(Reponse=5);(Reponse=6);(Reponse=7)),write('votre reponse:'),write(Reponse),nl,nl.
 
 
 
@@ -138,7 +137,7 @@ placer_jeton(Colonne,Jeton,Resultat):-conc(Colonne,Jeton,Resultat),valider_place
 
 %Valider s'il reste de la place dans une colonne pour placer une piÃ¨ce.
 %retourne true ou false
-valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write('pieces dans la colone avant ajout: '),write(N),nl.
+valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write('pieces dans la colone avant ajout: '),write(N),nl,nl.
 
 
 
@@ -148,7 +147,8 @@ valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write('pieces dans
 %
 %%%%%%
 
-jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),jeux_recurrent(C1,C2,C3,C4,C5,C6,C7).
+jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),%placer_jeton(C1,['J'],Temporaire),
+                               jeux_recurrent(C1,C2,C3,C4,C5,C6,C7).
 
 valider_verticale().
 valider_horizontale().

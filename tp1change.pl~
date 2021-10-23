@@ -30,7 +30,7 @@ etat_initialdeux(['1','|','|','|','|','|'],
 % paramètre a envoyer : 7 colonnes
 %%%
 
-jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
+jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),write('     PROLOG     '),nl,nl,write('    EQUIPE 22     '),nl,nl,
             jeux_recurrent(Un,Deux,Trois,Quatre,Cinq,Six,Sept).
            % replace_list(Deux,Test),write(Test),write(Deux),conc(Un,Deux,Test),conc(Test,['1|'],Sad),write(Sad),conc(Test,['1|'],Sad),write(Sad),
            % nl,nl,voirboard(Un,Deux,Trois,Sad,Cinq,Six,Sept).
@@ -114,8 +114,8 @@ transfert_AI(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,jeux_AI(Retour,C2,C3,C4,C5,C6
 % le cas, elle echoue et on obtient un false.
 % %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-question_utilisateur(Reponse):-write('quelle colone desirez-vous jouer: reponse sous forme 1. 2. 3. 4. 5. 6. 7.'),write(' une autre reponse arrete le jeu:'),nl,read(Reponse),verifier_reponse(Reponse).
-verifier_reponse(Reponse):-((Reponse=1);(Reponse=2);(Reponse=3);(Reponse=4);(Reponse=5);(Reponse=6);(Reponse=7)),write('votre reponse:'),write(Reponse),nl.
+question_utilisateur(Reponse):-write('Placer votre pièce: reponse sous forme 1. 2. 3. 4. 5. 6. 7.'),write(' une autre reponse arrete le jeu:'),nl,read(Reponse),verifier_reponse(Reponse).
+verifier_reponse(Reponse):-((Reponse=1);(Reponse=2);(Reponse=3);(Reponse=4);(Reponse=5);(Reponse=6);(Reponse=7)),write('votre reponse:'),write(Reponse),nl,nl.
 
 
 
@@ -138,7 +138,7 @@ placer_jeton(Colonne,Jeton,Resultat):-conc(Colonne,Jeton,Resultat),valider_place
 
 %Valider s'il reste de la place dans une colonne pour placer une piÃ¨ce.
 %retourne true ou false
-valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write('longeur dans la colone avant ajout: '),write(N),nl.
+valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write('pieces dans la colone avant ajout: '),write(N),nl,nl.
 
 
 
@@ -148,7 +148,8 @@ valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write('longeur dan
 %
 %%%%%%
 
-jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),jeux_recurrent(C1,C2,C3,C4,C5,C6,C7).
+jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),placer_jeton(C1,['J'],Temporaire),
+                               jeux_recurrent(Temporaire,C2,C3,C4,C5,C6,C7).
 
 valider_verticale().
 valider_horizontale().
