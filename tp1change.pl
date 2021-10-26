@@ -109,7 +109,11 @@ transfert_AI(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,jeux_AI(Retour,C2,C3,C4,C5,C6
 %%%%%%
 
 jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),%placer_jeton(C1,['J'],Temporaire),
-                               append([],[C1,C2,C3,C4,C5,C6,C7],Matrice),nl,voir(Matrice,'La matrice :  '),nl,vgagne('R',Matrice);write('non'),                               jeux_recurrent(C1,C2,C3,C4,C5,C6,C7).
+                               append([],[C1,C2,C3,C4,C5,C6,C7],Matrice),
+                               nl,voir(Matrice,'La matrice :  '),nl,
+                               compter_verticale('R',C1,Zero),Zeros is Zero,write(Zeros),
+                               vgagne('R',Matrice);write('non'),
+                               jeux_recurrent(C1,C2,C3,C4,C5,C6,C7).
 
 
 vgagne(Couleur,Mat):-
@@ -180,11 +184,13 @@ placer_jeton(Colonne,Jeton,Resultat):-conc(Colonne,Jeton,Resultat),valider_place
 valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write('pieces dans la colone avant ajout: '),write(N),nl,nl.
 
 
-
-
-valider_verticale().
+valider_verticale(Colonne, CouleurJeton):- compter_verticale(Colonne, CouleurJeton, Valeur), Valeur == 4, write("Win:" + CouleurJeton).
 valider_horizontale().
 valider_diagonale().
+
+compter_verticale(_,[],0).
+compter_verticale(Joueur,[Joueur|Colonne],Valeur):- compter_verticale(Joueur,Colonne,ValeurS),
+			  Valeur is ValeurS+1,nl,write('ValeurS Cumulée:'),write(ValeurS).
 
 min().
 max().
