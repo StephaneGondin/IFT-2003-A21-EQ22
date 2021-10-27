@@ -23,11 +23,9 @@ etat_final(). %???
 % paramètre a envoyer : 7 colonnes
 %%%
 
-jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),write('     PROLOG     '),nl,nl,write('    EQUIPE 22     '),nl,nl,
-            jeux_recurrent(Un,Deux,Trois,Quatre,Cinq,Six,Sept).
-           % replace_list(Deux,Test),write(Test),write(Deux),conc(Un,Deux,Test),conc(Test,['1|'],Sad),write(Sad),conc(Test,['1|'],Sad),write(Sad),
-           % nl,nl,voirboard(Un,Deux,Trois,Sad,Cinq,Six,Sept).
-%voirboard(Un,Deux,Trois,Quatre,Cinq,Six,Sept).
+jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),write('     PROLOG     '),
+                                                    nl,nl,write('    EQUIPE 22     '),nl,nl,write('   ____________    '),
+                                                    nl,nl,jeux_recurrent(Un,Deux,Trois,Quatre,Cinq,Six,Sept).
 
 
       %     voirboard(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
@@ -70,7 +68,8 @@ jeux_recurrent(C1,C2,C3,C4,C5,C6,C7):-%voirboard(C1,C2,C3,C4,C5,C6,C7),
 %Interface visuelle de base
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-voirboard(Un,Deux,Trois,Quatre,Cinq,Six,Sept):-voir(Un,'1'),voir(Deux,'2'),voir(Trois,'3'),voir(Quatre,'4'),voir(Cinq,'5'),voir(Six,'6'),voir(Sept,'7').
+voirboard(Un,Deux,Trois,Quatre,Cinq,Six,Sept):-voir(Un,'1'),voir(Deux,'2'),voir(Trois,'3'),voir(Quatre,'4'),
+                                                    voir(Cinq,'5'),voir(Six,'6'),voir(Sept,'7').
 
 voir(X,Lettre):- write(X),write(Lettre),nl.
 
@@ -85,7 +84,10 @@ voir(X,Lettre):- write(X),write(Lettre),nl.
 % colonne, le ! arrete la fonction apres avoir trouvé le Y, sans
 % continuer dans la recherche vu que c'est des ou=
 %
-swap(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,replace_list(C1,Retour),!;Y==2,replace_list(C2,Retour),!;Y==3,replace_list(C3,Retour),!;Y==4,replace_list(C4,Retour),!;Y==5,replace_list(C5,Retour),!;Y==6,replace_list(C6,Retour),!;Y==7,replace_list(C7,Retour),!.
+swap(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,replace_list(C1,Retour),!;Y==2,replace_list(C2,Retour),!;Y==3,
+                                                    replace_list(C3,Retour),!;Y==4,replace_list(C4,Retour),!;Y==5,
+                                                    replace_list(C5,Retour),!;Y==6,replace_list(C6,Retour),!;Y==7,
+                                                    replace_list(C7,Retour),!.
 
 
 %%%%%%%%%%%%%%%%%%%
@@ -99,7 +101,10 @@ swap(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,replace_list(C1,Retour),!;Y==2,replac
 % modifié plutot que le parametre C% original. Ca permet la recursivite
 % de continuer. Retour est envoye a différent endroit selon le parametre
 % Y. ! arrete la recherche.
-transfert_AI(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,jeux_AI(Retour,C2,C3,C4,C5,C6,C7),!;Y==2,jeux_AI(C1,Retour,C3,C4,C5,C6,C7),!;Y==3,jeux_AI(C1,C2,Retour,C4,C5,C6,C7),!;Y==4,jeux_AI(C1,C2,C3,Retour,C5,C6,C7),!;Y==5,jeux_AI(C1,C2,C3,C4,Retour,C6,C7),!;Y==6,jeux_AI(C1,C2,C3,C4,C5,Retour,C7),!;Y==7,jeux_AI(C1,C2,C3,C4,C5,C6,Retour),!.
+transfert_AI(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,jeux_AI(Retour,C2,C3,C4,C5,C6,C7),!;Y==2,jeux_AI(C1,Retour,C3,C4,C5,C6,C7),!;Y==3,
+                                                    jeux_AI(C1,C2,Retour,C4,C5,C6,C7),!;Y==4,jeux_AI(C1,C2,C3,Retour,C5,C6,C7),!;Y==5,
+                                                    jeux_AI(C1,C2,C3,C4,Retour,C6,C7),!;Y==6,jeux_AI(C1,C2,C3,C4,C5,Retour,C7),!;Y==7,
+                                                    jeux_AI(C1,C2,C3,C4,C5,C6,Retour),!.
 
 
 %%%%%%%%%%%%
@@ -108,25 +113,29 @@ transfert_AI(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,jeux_AI(Retour,C2,C3,C4,C5,C6
 %
 %%%%%%
 
-jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),%placer_jeton(C1,['J'],Temporaire),
-                               append([],[C1,C2,C3,C4,C5,C6,C7],Matrice),
+jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),
+                               replace_list(C1,Liste_Jeux_AI),
+                               placer_jeton(Liste_Jeux_AI,['J'],Temporaire),write(Temporaire),
+                               append([],[Temporaire,C2,C3,C4,C5,C6,C7],Matrice),
                                nl,voir(Matrice,'La matrice :  '),nl,
-                               compter_verticale('R',C1,Zero),Zeros is Zero,write(Zeros),
-                               vgagne('R',Matrice);write('non'),
-                               jeux_recurrent(C1,C2,C3,C4,C5,C6,C7).
+                               compter_verticale('R',Temporaire,Zero),Zeros is Zero,write(Zeros),
+                               vgagne('J',Matrice),
+                               write(Temporaire),
+                               jeux_recurrent(Temporaire,C2,C3,C4,C5,C6,C7).
 
 
 vgagne(Couleur,Mat):-
-               append(_, [Colonne|_], Mat),
-               append(_,[Couleur,Couleur,Couleur,Couleur|_],Colonne),write('Ce joeur a gagne:'),nl,write(Couleur).
+                              append(_, [Colonne|_], Mat),
+                              append(_,[Couleur,Couleur,Couleur,Couleur|_],Colonne),write('Ce joeur a gagne:'),nl,write(Couleur).
 
 vgagne(Couleur,Mat):-
-                 append(_,[Colonne1,Colonne2,Colonne3,Colonne4|_],Mat),
-                 append(Vide1,[Couleur|_],Colonne1),
-                 append(Vide2,[Couleur|_],Colonne2),
-                 append(Vide3,[Couleur|_],Colonne3),
-                 append(Vide4,[Couleur|_],Colonne4),
-                 (length(Vide1,N), length(Vide2,N), length(Vide3,N), length(Vide4,N)),write('Ce joeur a gagne:'),nl,write(Couleur).
+                              append(_,[Colonne1,Colonne2,Colonne3,Colonne4|_],Mat),
+                              append(Vide1,[Couleur|_],Colonne1),
+                              append(Vide2,[Couleur|_],Colonne2),
+                              append(Vide3,[Couleur|_],Colonne3),
+                              append(Vide4,[Couleur|_],Colonne4),
+                              (length(Vide1,N), length(Vide2,N), length(Vide3,N), length(Vide4,N)),write('Ce joeur a gagne:'),
+                              nl,write(Couleur),nl,write('Félicitations'),nl,nl,abort;nl.
 
 
 
@@ -156,8 +165,12 @@ vgagne(Couleur,Mat):-
 % le cas, elle echoue et on obtient un false.
 % %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-question_utilisateur(Reponse):-write('Placer votre pièce: reponse sous forme 1. 2. 3. 4. 5. 6. 7.'),write(' une autre reponse arrete le jeu:'),nl,read(Reponse),verifier_reponse(Reponse).
-verifier_reponse(Reponse):-((Reponse=1);(Reponse=2);(Reponse=3);(Reponse=4);(Reponse=5);(Reponse=6);(Reponse=7)),write('votre reponse:'),write(Reponse),nl,nl.
+question_utilisateur(Reponse):-write('Placer votre pièce: reponse sous forme 1. 2. 3. 4. 5. 6. 7.'),nl,
+                                                    write(' Tout autre reponse arrete le jeu:'),nl,read(Reponse),verifier_reponse(Reponse).
+
+verifier_reponse(Reponse):-((Reponse=1);(Reponse=2);(Reponse=3);
+                           (Reponse=4);(Reponse=5);(Reponse=6);(Reponse=7)),
+                           write('votre reponse:'),write(Reponse),nl,nl.
 
 
 
@@ -172,6 +185,8 @@ replace_list([H|X], [H|Y]) :- H \= n, replace_list(X, Y).
 conc([], L, L).
 conc([X|R1], L2, [X|R3]):- conc(R1, L2, R3).
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Placer_Jeton fonction qui place un jeton si il reste de la place sinon
 % retourne false pour le moment.
@@ -184,13 +199,19 @@ placer_jeton(Colonne,Jeton,Resultat):-conc(Colonne,Jeton,Resultat),valider_place
 valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write('pieces dans la colone avant ajout: '),write(N),nl,nl.
 
 
-valider_verticale(Colonne, CouleurJeton):- compter_verticale(Colonne, CouleurJeton, Valeur), Valeur == 4, write("Win:" + CouleurJeton).
+valider_verticale(Colonne, CouleurJeton):- compter_verticale(Colonne,
+                                           CouleurJeton, Valeur), Valeur == 4, write("Win:" + CouleurJeton).
+
+
+
 valider_horizontale().
 valider_diagonale().
 
 compter_verticale(_,[],0).
+compter_verticale(Joueur,[ValeurTrouve|_],0):- not(ValeurTrouve == Joueur).
 compter_verticale(Joueur,[Joueur|Colonne],Valeur):- compter_verticale(Joueur,Colonne,ValeurS),
-			  Valeur is ValeurS+1,nl,write('ValeurS Cumulée:'),write(ValeurS).
+			  Valeur is ValeurS+1.
+
 
 min().
 max().
