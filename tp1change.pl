@@ -113,14 +113,15 @@ transfert_AI(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,jeux_AI(Retour,C2,C3,C4,C5,C6
 %%%%%%
 
 jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),
+                               min(C1,C2,C3,C4,C5,C6,C7,Test,'J'),
                                replace_list(C1,Liste_Jeux_AI),%choix emplacement Ai, foncion minmax choisi ici
                                placer_jeton(Liste_Jeux_AI,['J'],Temporaire),  %Temporaire est une liste contenant le choix de l'AI par min max
                                append([],[Temporaire,C2,C3,C4,C5,C6,C7],Matrice),   % a modifier, mais cette ligne devra envoyer dans
                                                                                    % la matrice le choix selon la colone choisie
                                nl,voir(Matrice,'La matrice :  '),nl,   % vision, a enlever
-                               compter_verticale('J',Temporaire,Zero),Zeros is Zero,write(Zeros),   %fonction inclus de min max, sera enlever
-                               vgagne('J',Matrice),  %validation de qui gagne
-                               vgagne('R',Matrice),   %validation
+                               %compter_verticale('J',Temporaire,Zero),Zeros is Zero,write(Zeros),   %fonction inclus de min max, sera enlever
+                               vgagne('R',Matrice),  %validation de qui gagne
+                               vgagne('J',Matrice),   %validation
                                write(Temporaire),  % a enlever
                                jeux_recurrent(Temporaire,C2,C3,C4,C5,C6,C7).  % on va envoyer selon ce que l'ai a choisi
 
@@ -172,7 +173,7 @@ question_utilisateur(Reponse):-write('Placer votre pièce: reponse sous forme 1. 
 
 verifier_reponse(Reponse):-((Reponse=1);(Reponse=2);(Reponse=3);
                            (Reponse=4);(Reponse=5);(Reponse=6);(Reponse=7)),
-                           write('votre reponse:'),write(Reponse),nl,nl.
+                           write('votre reponse:'),write(Reponse),nl,nl;abort.
 
 
 
@@ -210,10 +211,12 @@ valider_horizontale().
 valider_diagonale().
 
 compter_verticale(_,[],0).
-compter_verticale(Joueur,[ValeurTrouve|_],0):- not(ValeurTrouve == Joueur).
-compter_verticale(Joueur,[Joueur|Colonne],Valeur):- compter_verticale(Joueur,Colonne,ValeurS),
-			  Valeur is ValeurS+1.
+compter_verticale(Joueur,[_|ValeurTrouve],1):- not(ValeurTrouve == Joueur).
+compter_verticale(Joueur,[Colonne|ValeurTrouve],Valeur):- compter_verticale(Joueur,Colonne,ValeurS),
+			  Valeur is ValeurS+1,(ValeurTrouve == Joueur).
+% compter_verticale(Joueur,[Joueur|Colonne],Valeur):-
+% compter_verticale(Joueur,Colonne,ValeurS),
+			 % Valeur is ValeurS+1.
 
-
-min().
+min(M1,M2,M3,M4,M5,M6,M7,Value,Couleur):-compter_verticale(Couleur,M1,Zero),Zeros is Zero,nl,nl,write('valeur de Zeros:'),nl,nl,write(Zeros).
 max().
