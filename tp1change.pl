@@ -27,7 +27,6 @@ jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),write('     PROLOG     '
                                                     nl,nl,write('    EQUIPE 22     '),nl,nl,write('   ____________    '),
                                                     nl,nl,jeux_recurrent(Un,Deux,Trois,Quatre,Cinq,Six,Sept).
 
-
       %     voirboard(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
        %    question_utilisateur(Reponse),
        %    swap(Un,Deux,Trois,Quatre,Cinq,Six,Sept,Reponse,Retour),
@@ -114,19 +113,22 @@ transfert_AI(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,jeux_AI(Retour,C2,C3,C4,C5,C6
 %%%%%%
 
 jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),
-                               replace_list(C1,Liste_Jeux_AI),
-                               placer_jeton(Liste_Jeux_AI,['J'],Temporaire),write(Temporaire),
-                               append([],[Temporaire,C2,C3,C4,C5,C6,C7],Matrice),
-                               nl,voir(Matrice,'La matrice :  '),nl,
-                               compter_verticale('R',Temporaire,Zero),Zeros is Zero,write(Zeros),
-                               vgagne('J',Matrice),
-                               write(Temporaire),
-                               jeux_recurrent(Temporaire,C2,C3,C4,C5,C6,C7).
+                               replace_list(C1,Liste_Jeux_AI),%choix emplacement Ai, foncion minmax choisi ici
+                               placer_jeton(Liste_Jeux_AI,['J'],Temporaire),  %Temporaire est une liste contenant le choix de l'AI par min max
+                               append([],[Temporaire,C2,C3,C4,C5,C6,C7],Matrice),   % a modifier, mais cette ligne devra envoyer dans
+                                                                                   % la matrice le choix selon la colone choisie
+                               nl,voir(Matrice,'La matrice :  '),nl,   % vision, a enlever
+                               compter_verticale('J',Temporaire,Zero),Zeros is Zero,write(Zeros),   %fonction inclus de min max, sera enlever
+                               vgagne('J',Matrice),  %validation de qui gagne
+                               vgagne('R',Matrice),   %validation
+                               write(Temporaire),  % a enlever
+                               jeux_recurrent(Temporaire,C2,C3,C4,C5,C6,C7).  % on va envoyer selon ce que l'ai a choisi
 
 
 vgagne(Couleur,Mat):-
                               append(_, [Colonne|_], Mat),
-                              append(_,[Couleur,Couleur,Couleur,Couleur|_],Colonne),write('Ce joeur a gagne:'),nl,write(Couleur).
+                              append(_,[Couleur,Couleur,Couleur,Couleur|_],Colonne),write('Ce joeur a gagne:'),
+                              nl,write(Couleur),nl,write('Félicitations'),nl,abort.
 
 vgagne(Couleur,Mat):-
                               append(_,[Colonne1,Colonne2,Colonne3,Colonne4|_],Mat),
