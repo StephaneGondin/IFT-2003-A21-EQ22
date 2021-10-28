@@ -199,7 +199,8 @@ placer_jeton(Colonne,Jeton,Resultat):-conc(Colonne,Jeton,Resultat),valider_place
 
 %Valider s'il reste de la place dans une colonne pour placer une pi√®ce.
 %retourne true ou false
-valider_place_disponible(Colonne):- length(Colonne, N), N < 7,write('pieces dans la colone avant ajout: '),write(N),nl,nl.
+valider_place_disponible(Colonne):- length(Colonne, N), N < 7.%write('pieces dans la colone avant ajout: '),write(N),nl,nl.
+
 
 
 valider_verticale(Colonne, CouleurJeton):- compter_verticale(Colonne,
@@ -207,15 +208,46 @@ valider_verticale(Colonne, CouleurJeton):- compter_verticale(Colonne,
 
 
 
+
+
 valider_horizontale().
 valider_diagonale().
 
 compter_verticale(_,[],0).
-compter_verticale(Joueur,[_|ValeurTrouve],0):- not(ValeurTrouve == Joueur).
-compter_verticale(Joueur,[ValeurTrouve|Colonne],Valeur):- compter_verticale(Joueur,Colonne,ValeurS),
-			  Valeur is ValeurS+1,(ValeurTrouve == Joueur).
-compter_verticale(Joueur,[Joueur|Colonne],Valeur):- compter_verticale(Joueur,Colonne,ValeurS),
-			  Valeur is ValeurS+1.
+% compter_verticale(Joueur,[_|ValeurTrouve],1):- not(ValeurTrouve ==
+% Joueur).
+compter_verticale(Joueur,[_|ValeurTrouve],Valeur):- %compter_verticale(Joueur,Colonne,ValeurS),
+			  Valeur is ValeurS+1,write(ValeurS).
 
-min(M1,M2,M3,M4,M5,M6,M7,Value,Couleur):-compter_verticale(Couleur,M1,Zero),Zeros is Zero,nl,nl,write('valeur de Zeros:'),nl,nl,write(Zeros).
+%  Fonction membre de la liste, retourne vrai se il y a une membre dans
+%  la liste.
+%
+membre(X,[X|R]).
+membre(X,[Y|R]):- not(X=Y), membre(X,R).
+
+% positionverticale(X,[X|R],Valeur) retourne le nombre d'instance en
+% debut de liste identique pour l'heuristique selon la couleur X.
+% La Valeur est l'heuristique.
+%
+%
+posverticale(X,[Y|R],Valeur):- X=Y,
+                              Valeurs is Valeur+1,
+                               posverticale(X,R,Valeurs),!,
+                              !;write(Valeur),true.
+
+
+%Fonction inverse la liste. Vu que l'on doit lire parfois le dernier
+%  entrÈ dans la liste, c'est pratique.
+%   Appel : inverse([a,b,c],X,[]).
+
+
+inverse([],Body,Body).
+inverse([Head|Tail],Body,Acc) :- inverse(Tail,Body,[Head|Acc]).
+
+
+% compter_verticale(Joueur,[Joueur|Colonne],Valeur):-
+% compter_verticale(Joueur,Colonne,ValeurS),
+			 % Valeur is ValeurS+1.
+
+min(M1,M2,M3,M4,M5,M6,M7,Value,Couleur):-posverticale(Couleur,M1);nl,nl,write('valeur de Zeros:'),nl,nl.
 max().
