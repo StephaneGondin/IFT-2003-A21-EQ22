@@ -42,7 +42,7 @@ jeux_recurrent(C1,C2,C3,C4,C5,C6,C7):-%voirboard(C1,C2,C3,C4,C5,C6,C7),
                                                   %fonction tour utilisateur
                                                     question_utilisateur(Reponse),
 
-                                                    swap(C1,C2,C3,C4,C5,C6,C7,Reponse,Retour),write(Retour),
+                                                    swap(C1,C2,C3,C4,C5,C6,C7,Reponse,Retour),%write(Retour),
                                                     placer_jeton(Retour,['R'],Envoie_A_AI),
                                                     transfert_AI(C1,C2,C3,C4,C5,C6,C7,Reponse,Envoie_A_AI).
                                                     %jeux_recurrent(Envoie_A_AI,C2,C3,C4,C5,C6,C7).
@@ -122,7 +122,7 @@ jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),
                                %compter_verticale('J',Temporaire,Zero),Zeros is Zero,write(Zeros),   %fonction inclus de min max, sera enlever
                                vgagne('R',Matrice),  %validation de qui gagne
                                vgagne('J',Matrice),   %validation
-                               write(Temporaire),  % a enlever
+                               %write(Temporaire),  % a enlever
                                jeux_recurrent(Temporaire,C2,C3,C4,C5,C6,C7).  % on va envoyer selon ce que l'ai a choisi
 
 
@@ -207,9 +207,11 @@ valider_verticale(Colonne, CouleurJeton):- compter_verticale(Colonne,
                                            CouleurJeton, Valeur), Valeur == 4, write("Win:" + CouleurJeton).
 
 
-
-
-
+% @Stephane Ma nouvelle fonction valider_verticale.
+% valider_verticale(Colonne, CouleurJeton, ValeurHeuristique)
+% où Colonne est la colonne à valider verticalement,
+% CouleurJeton est la couleur du jeton à valider
+% et ValeurHeuristique est la valeur de l'heuristique à l'emplacement vide dans la colonne.
 valider_horizontale().
 valider_diagonale().
 
@@ -230,9 +232,17 @@ membre(X,[Y|R]):- not(X=Y), membre(X,R).
 % La Valeur est l'heuristique.
 %
 %
-posverticale(X,[Y|R],Valeur,Sortie):- X=Y,
+posverticalemax(X,[],Valeur,Sortie):-Valeur=0,Sortie=0.
+posverticalemax(X,[Y|R],Valeur,Sortie):- X=Y,
                               Valeurs is Valeur+1,
-                               posverticale(X,R,Valeurs,Sortie),!,
+                               posverticalemax(X,R,Valeurs,Sortie),!,
+                              !;write(Valeur),Sortie=Valeur,true.
+
+
+posverticalemin(X,[],Valeur,Sortie):-Valeur=0,Sortie=0.
+posverticalemin(X,[Y|R],Valeur,Sortie):- X=Y,
+                              Valeurs is Valeur-1,
+                               posverticalemin(X,R,Valeurs,Sortie),write(Valeurs),!,
                               !;write(Valeur),Sortie=Valeur,true.
 
 
@@ -240,7 +250,7 @@ posverticale(X,[Y|R],Valeur,Sortie):- X=Y,
 %  entré dans la liste, c'est pratique.
 %   Appel : inverse([a,b,c],X,[]).  Body sera le resultat.
 
-
+inverse([],[],[]).
 inverse([],Body,Body).
 inverse([Head|Tail],Body,Acc) :- inverse(Tail,Body,[Head|Acc]).
 
@@ -249,5 +259,11 @@ inverse([Head|Tail],Body,Acc) :- inverse(Tail,Body,[Head|Acc]).
 % compter_verticale(Joueur,Colonne,ValeurS),
 			 % Valeur is ValeurS+1.
 
-min(M1,M2,M3,M4,M5,M6,M7,Value,Couleur):-inverse(M1,X,[]),posverticale(Couleur,X,0,MinResultat1).%posverticale(Couleur,M1,0,Sorties);nl,nl,write('valeur de position:'),nl,write(Sorties),nl.
+min(M1,M2,M3,M4,M5,M6,M7,Value,Couleur):-inverse(M1,X,[]),valider_verticale(X,Couleur,Val1),nl,nl,write(Val1),nl,nl.%posverticale(Couleur,M1,0,Sorties);nl,nl,write('valeur de position:'),nl,write(Sorties),nl.
 max().
+
+
+
+valider_verticale([], _, 1).
+valider_verticale([X| _], Couleur, 1):- not(X == Couleur), !.
+valider_verticale([X| Colonne], Couleur, ValeurHeuristique):- X == Couleur, valider_verticale(Colonne, Couleur, Val1), ValeurHeuristique is Val1 + 1.
