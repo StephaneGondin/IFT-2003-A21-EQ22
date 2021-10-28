@@ -230,15 +230,15 @@ membre(X,[Y|R]):- not(X=Y), membre(X,R).
 % La Valeur est l'heuristique.
 %
 %
-posverticale(X,[Y|R],Valeur):- X=Y,
+posverticale(X,[Y|R],Valeur,Sortie):- X=Y,
                               Valeurs is Valeur+1,
-                               posverticale(X,R,Valeurs),!,
-                              !;write(Valeur),true.
+                               posverticale(X,R,Valeurs,Sortie),!,
+                              !;write(Valeur),Sortie=Valeur,true.
 
 
 %Fonction inverse la liste. Vu que l'on doit lire parfois le dernier
 %  entré dans la liste, c'est pratique.
-%   Appel : inverse([a,b,c],X,[]).
+%   Appel : inverse([a,b,c],X,[]).  Body sera le resultat.
 
 
 inverse([],Body,Body).
@@ -249,5 +249,5 @@ inverse([Head|Tail],Body,Acc) :- inverse(Tail,Body,[Head|Acc]).
 % compter_verticale(Joueur,Colonne,ValeurS),
 			 % Valeur is ValeurS+1.
 
-min(M1,M2,M3,M4,M5,M6,M7,Value,Couleur):-posverticale(Couleur,M1,0);nl,nl,write('valeur de Zeros:'),nl,nl.
+min(M1,M2,M3,M4,M5,M6,M7,Value,Couleur):-inverse(M1,X,[]),posverticale(Couleur,X,0,MinResultat1).%posverticale(Couleur,M1,0,Sorties);nl,nl,write('valeur de position:'),nl,write(Sorties),nl.
 max().
