@@ -113,7 +113,7 @@ transfert_AI(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,jeux_AI(Retour,C2,C3,C4,C5,C6
 %%%%%%
 
 jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),
-                               min(C1,C2,C3,C4,C5,C6,C7,Test,'J'),
+                               min(C1,C2,C3,C4,C5,C6,C7,Test,'J',ListeResultat),
                                replace_list(C1,Liste_Jeux_AI),%choix emplacement Ai, foncion minmax choisi ici
                                placer_jeton(Liste_Jeux_AI,['J'],Temporaire),  %Temporaire est une liste contenant le choix de l'AI par min max
                                append([],[Temporaire,C2,C3,C4,C5,C6,C7],Matrice),   % a modifier, mais cette ligne devra envoyer dans
@@ -227,25 +227,6 @@ compter_verticale(Joueur,[_|ValeurTrouve],Valeur):- %compter_verticale(Joueur,Co
 membre(X,[X|R]).
 membre(X,[Y|R]):- not(X=Y), membre(X,R).
 
-% positionverticale(X,[X|R],Valeur) retourne le nombre d'instance en
-% debut de liste identique pour l'heuristique selon la couleur X.
-% La Valeur est l'heuristique.
-%
-%
-posverticalemax(X,[],Valeur,Sortie):-Valeur=0,Sortie=0.
-posverticalemax(X,[Y|R],Valeur,Sortie):- X=Y,
-                              Valeurs is Valeur+1,
-                               posverticalemax(X,R,Valeurs,Sortie),!,
-                              !;write(Valeur),Sortie=Valeur,true.
-
-
-posverticalemin(X,[],Valeur,Sortie):-Valeur=0,Sortie=0.
-posverticalemin(X,[Y|R],Valeur,Sortie):- X=Y,
-                              Valeurs is Valeur-1,
-                               posverticalemin(X,R,Valeurs,Sortie),write(Valeurs),!,
-                              !;write(Valeur),Sortie=Valeur,true.
-
-
 %Fonction inverse la liste. Vu que l'on doit lire parfois le dernier
 %  entré dans la liste, c'est pratique.
 %   Appel : inverse([a,b,c],X,[]).  Body sera le resultat.
@@ -259,8 +240,37 @@ inverse([Head|Tail],Body,Acc) :- inverse(Tail,Body,[Head|Acc]).
 % compter_verticale(Joueur,Colonne,ValeurS),
 			 % Valeur is ValeurS+1.
 
-min(M1,M2,M3,M4,M5,M6,M7,Value,Couleur):-valider_verticale(M1,Couleur,Val1),nl,nl,write(Val1),nl,nl.%posverticale(Couleur,M1,0,Sorties);nl,nl,write('valeur de position:'),nl,write(Sorties),nl.
+min(M1,M2,M3,M4,M5,M6,M7,Value,Couleur,ListeResultat):-
+                            inverse(M1,X,[]),valider_verticale(X,Couleur,Val1),nl,append([],[Val1,'1'],ListeResultat),nl,write(Val1),!,
+                            inverse(M2,X2,[]),valider_verticale(X2,Couleur,Val2),nl,append([Val2,'2'],ListeResultat,ListeResultat2),write(Val2),!,
+                            inverse(M3,X3,[]),valider_verticale(X3,Couleur,Val3),nl,append([Val3,'3'],ListeResultat2,ListeResultat3),write(Val3),!,
+                            inverse(M4,X4,[]),valider_verticale(X4,Couleur,Val4),nl,append([Val4,'4'],ListeResultat3,ListeResultat4),write(Val4),!,
+                            inverse(M5,X5,[]),valider_verticale(X5,Couleur,Val5),nl,append([Val5,'5'],ListeResultat4,ListeResultat5),write(Val5),!,
+                            inverse(M6,X6,[]),valider_verticale(X6,Couleur,Val6),nl,append([Val6,'6'],ListeResultat5,ListeResultat6),write(Val6),!,
+                            inverse(M7,X7,[]),valider_verticale(X7,Couleur,Val7),nl,append([Val7,'7'],ListeResultat6,ListeResultat7),write(ListeResultat7).
+
+%
+
+largest([X|Xs], O) :- largest(Xs, X, O).
+
+largest([], O, O).
+largest([X|Xs], M, O) :-
+    M1 is max(X, M),
+    largest(Xs, M1, O).
+
+
+            %posverticale(Couleur,M1,0,Sorties);nl,nl,write('valeur de position:'),nl,write(Sorties),nl.
 max().
+
+
+
+% valider_verticale(X,Colone,Valeur) retourne le nombre d'instance en
+% debut de liste identique pour l'heuristique selon la couleur X.
+% La Valeur est l'heuristique.
+% Cette fonction est joint a la fonction d'inversion de liste pour
+% avoir les entres en debut.
+%
+%
 
 
 
