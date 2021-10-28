@@ -142,15 +142,17 @@ vgagne(Couleur,Mat):-
 
 
 
-% vgagne(Couleur,Mat):-
-%                 append(_,[Colonne1,Colonne2,Colonne3,Colonne4|_],Mat),
-%                 append(Vide1,[Couleur|_],Colonne1),write('vid1'),nl,write(Colonne1),
-%
- %                append(Vide2,[Couleur|_],Colonne2),write('vid1'),nl,write(Colonne2),
- %                append(Vide3,[Couleur|_],Colonne3),write('vid1'),nl,write(Colonne3),
- %                append(Vide4,[Couleur|_],Colonne4),write('vid1'),nl,write(Colonne4),
- %                length(Vide1,N)= N1, length(Vide2,N)= N2, length(Vide3,N)= N3, length(Vide4,N)= N4,N2 is N1+1,N3 is N2+1,N4 is N3+1,write('Ce joeur a gagne:'),nl,write(Couleur).
+vgagne(Couleur,Mat):-
+                 append(_,[Colonne1,Colonne2,Colonne3,Colonne4|_],Mat),
+                 append(Vide1,[Couleur|_],Colonne1),write('vid1'),
 
+                 append(Vide2,[Couleur|_],Colonne2),write('vid1'),
+                 append(Vide3,[Couleur|_],Colonne3),write('vid1'),
+                 append(Vide4,[Couleur|_],Colonne4),write('vid1'),
+                 length(Vide1,Mat1), length(Vide2,Mat2),
+                 length(Vide3,Mat3), length(Vide4,Mat4),
+                 Mat2 is Mat1+1, Mat3 is Mat2+1, Mat4 is Mat3+1,write('victoire');
+                 Mat2 is Mat1-1, Mat3 is Mat2-1, Mat4 is Mat3-1,write('victoire').
 
 
 
@@ -224,8 +226,8 @@ compter_verticale(Joueur,[_|ValeurTrouve],Valeur):- %compter_verticale(Joueur,Co
 %  Fonction membre de la liste, retourne vrai se il y a une membre dans
 %  la liste.
 %
-membre(X,[X|R]).
-membre(X,[Y|R]):- not(X=Y), membre(X,R).
+%membre2(X,[X|R]).
+%membre2(X,[Y|R]):- not(X=Y), membre2(X,R).
 
 %Fonction inverse la liste. Vu que l'on doit lire parfois le dernier
 %  entré dans la liste, c'est pratique.
@@ -241,22 +243,29 @@ inverse([Head|Tail],Body,Acc) :- inverse(Tail,Body,[Head|Acc]).
 			 % Valeur is ValeurS+1.
 
 min(M1,M2,M3,M4,M5,M6,M7,Value,Couleur,ListeResultat):-
-                            inverse(M1,X,[]),valider_verticale(X,Couleur,Val1),nl,append([],[Val1,'C1'],ListeResultat),nl,write(Val1),!,
-                            inverse(M2,X2,[]),valider_verticale(X2,Couleur,Val2),nl,append([Val2,'C2'],ListeResultat,ListeResultat2),write(Val2),!,
-                            inverse(M3,X3,[]),valider_verticale(X3,Couleur,Val3),nl,append([Val3,'C3'],ListeResultat2,ListeResultat3),write(Val3),!,
-                            inverse(M4,X4,[]),valider_verticale(X4,Couleur,Val4),nl,append([Val4,'C4'],ListeResultat3,ListeResultat4),write(Val4),!,
-                            inverse(M5,X5,[]),valider_verticale(X5,Couleur,Val5),nl,append([Val5,'C5'],ListeResultat4,ListeResultat5),write(Val5),!,
-                            inverse(M6,X6,[]),valider_verticale(X6,Couleur,Val6),nl,append([Val6,'C6'],ListeResultat5,ListeResultat6),write(Val6),!,
-                            inverse(M7,X7,[]),valider_verticale(X7,Couleur,Val7),nl,append([Val7,'C7'],ListeResultat6,ListeResultat7),write(ListeResultat7).
+                            inverse(M1,X,[]),valider_verticale(X,Couleur,Val1),nl,append([],['C1',Val1],ListeResultat),nl,write(Val1),
+                                      append([],[Val1],Mat1), !,
+                            inverse(M2,X2,[]),valider_verticale(X2,Couleur,Val2),nl,append(['C2',Val2],ListeResultat,ListeResultat2),write(Val2),
+                                      append([Val2],Mat1,Mat2),!,
+                            inverse(M3,X3,[]),valider_verticale(X3,Couleur,Val3),nl,append(['C3',Val3],ListeResultat2,ListeResultat3),write(Val3),
+                                       append([Val3],Mat2,Mat3),!,
+                            inverse(M4,X4,[]),valider_verticale(X4,Couleur,Val4),nl,append(['C4',Val4],ListeResultat3,ListeResultat4),write(Val4),
+                                       append([Val4],Mat3,Mat4),!,
+                            inverse(M5,X5,[]),valider_verticale(X5,Couleur,Val5),nl,append(['C5',Val5],ListeResultat4,ListeResultat5),write(Val5),
+                                       append([Val5],Mat4,Mat5),!,
+                            inverse(M6,X6,[]),valider_verticale(X6,Couleur,Val6),nl,append(['C6',Val6],ListeResultat5,ListeResultat6),write(Val6),
+                                       append([Val6],Mat5,Mat6),!,
+                                       inverse(M7,X7,[]),valider_verticale(X7,Couleur,Val7),nl,append(['C7',Val7],ListeResultat6,ListeResultat7),                                          append([Val7],Mat6,Mat7) ,write(ListeResultat7),nl,write(Mat7),
+                             largest(Mat7,0,Retour),write(Retour).
 
 %
 
-largest([X|Xs], O) :- largest(Xs, X, O).
+largest([X|Xs], Retour) :- largest(Xs, X, Retour).
 
-largest([], O, O).
-largest([X|Xs], M, O) :-
-    M1 is max(X, M),
-    largest(Xs, M1, O).
+largest([], Retour, Retour).
+largest([X|Xs], Mat, Retour) :-
+    Mat1 is max(X, Mat),
+    largest(Xs, Mat1, Retour).
 
 
             %posverticale(Couleur,M1,0,Sorties);nl,nl,write('valeur de position:'),nl,write(Sorties),nl.
