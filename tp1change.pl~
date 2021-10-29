@@ -1,15 +1,31 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Fais
+%Fais Équipe 22, projet prolog
+%LEVIG3
+%STGRO17
+%VIPLO8
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Ã‰tats de dÃ©part et Ã©tat final
-etat_initial([],[],[],[],[],[],[]).
-etat_final(). %???
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Etat initial
+%
 % colone X row    ( 7 x 6 )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+
+
+
+etat_initial([],[],[],[],[],[],[]).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Etat final
+% Un joeur a gagné ou le jeux s'arrête
+%
+%
+
+
+etat_final():-nl,write('Arret du jeux').
+etat_final(Joueur):- write('Le joueur suivant a gagné'),nl,nl,write(Joueur).
 
 
 %%%
@@ -18,6 +34,14 @@ etat_final(). %???
 % validation sont également appelées dans le mouvement.
 %
 % paramètre a envoyer : 7 colonnes
+%
+% Ce prédicat est ESSENTIEL, car il démarre le jeux.
+%
+%
+% Appel du Jeux :    jeux.
+%
+% Les
+%
 %%%
 
 jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
@@ -31,7 +55,7 @@ jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
 
 
 
-jeux_recurrent(C1,C2,C3,C4,C5,C6,C7):-%voirboard(C1,C2,C3,C4,C5,C6,C7),
+jeux_recurrent(C1,C2,C3,C4,C5,C6,C7):-            voirboard(C1,C2,C3,C4,C5,C6,C7),
                                                   %fonction tour utilisateur
                                                     question_utilisateur(Reponse),
 
@@ -95,17 +119,78 @@ jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),
                                %nl,nl,write(ValeurHeuristiqueMin),nl,write(ColoneFinaleMin),
                                %heuristique(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMax,'R',ColoneFinaleMax),
                                %nl,nl,write(ValeurHeuristiqueMax),nl,write(ColoneFinaleMax),
-                               choixdeminmax(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMin,'J',ColoneFinaleMin),
-                               replace_list(C1,Liste_Jeux_AI),%choix emplacement Ai, foncion minmax choisi ici
+                               choixdeminmax(C1,C2,C3,C4,C5,C6,C7,ColonneFinale),
+                               nl,write('choix'),nl,write(ColonneFinale),
+                               %replace_list(C1,Liste_Jeux_AI),%choix emplacement Ai, foncion minmax choisi ici
+                               swap(C1,C2,C3,C4,C5,C6,C7,ColonneFinale,Liste_Jeux_AI),
                                placer_jeton(Liste_Jeux_AI,['J'],Temporaire),  %Temporaire est une liste contenant le choix de l'AI par min max
+                               transfert_A_Matrice(C1,C2,C3,C4,C5,C6,C7,ColonneFinale,Temporaire),
+
+
+
+
                                append([],[Temporaire,C2,C3,C4,C5,C6,C7],Matrice),   % a modifier, mais cette ligne devra envoyer dans
                                                                                    % la matrice le choix selon la colone choisie
                                nl,voir(Matrice,'La matrice :  '),nl,   % vision, a enlever
                                %compter_verticale('J',Temporaire,Zero),Zeros is Zero,write(Zeros),   %fonction inclus de min max, sera enlever
                                vgagne('R',Matrice),  %validation de qui gagne
                                vgagne('J',Matrice),   %validation
-                               %write(Temporaire),  % a enlever
-                               jeux_recurrent(Temporaire,C2,C3,C4,C5,C6,C7).  % on va envoyer selon ce que l'ai a choisi
+                               write(Temporaire),  % a enlever
+                               jeux_recurrent(C1,C2,C3,C4,C5,C6,C7).  % on va envoyer selon ce que l'ai a choisi
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Transfert_A_matrice est similaire a prepale le tranfert, elle
+% transfert à l'AI la matrice modifié plutot que le parametre C%
+% original. Ca permet la recursivite de continuer. Retour est envoye a
+% différent endroit selon le parametre Y. ! arrete la recherche.
+transfert_A_Matrice(C1,C2,C3,C4,C5,C6,C7,Y,Retour):-
+                                       Y==1,
+                                       append([],[Retour,C2,C3,C4,C5,C6,C7],Matrice),vgagne('R',Matrice),vgagne('J',Matrice),
+                                       jeux_recurrent(Retour,C2,C3,C4,C5,C6,C7),!;
+                                       Y==2,
+                                       append([],[C1,Retour,C3,C4,C5,C6,C7],Matrice),vgagne('R',Matrice),vgagne('J',Matrice),
+                                       jeux_recurrent(C1,Retour,C3,C4,C5,C6,C7),!;
+                                       Y==3,
+                                       append([],[C1,C2,Retour,C4,C5,C6,C7],Matrice),vgagne('R',Matrice),vgagne('J',Matrice),
+                                       jeux_recurrent(C1,C2,Retour,C4,C5,C6,C7),!;
+                                       Y==4,
+                                       append([],[C1,C2,C3,Retour,C5,C6,C7],Matrice),vgagne('R',Matrice),vgagne('J',Matrice),
+                                       jeux_recurrent(C1,C2,C3,Retour,C5,C6,C7),!;
+                                       Y==5,
+                                       append([],[C1,C2,C3,C4,Retour,C6,C7],Matrice),vgagne('R',Matrice),vgagne('J',Matrice),
+                                       jeux_recurrent(C1,C2,C3,C4,Retour,C6,C7),!;
+                                       Y==6,
+                                       append([],[C1,Retour,C3,C4,C5,Retour,C7],Matrice),vgagne('R',Matrice),vgagne('J',Matrice),
+                                       jeux_recurrent(C1,C2,C3,C4,C5,Retour,C7),!;
+                                       Y==7,
+                                       append([],[C1,C2,C3,C4,C5,C6,Retour],Matrice),vgagne('R',Matrice),vgagne('J',Matrice),
+                                       jeux_recurrent(C1,C2,C3,C4,C5,C6,Retour),!.
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Vgagné est la verification de nos conditions de victoire.
+%
+% Nous avons comme parametre d'entrée une matrice dans le programme append([],[Temporaire,C2,C3,C4,C5,C6,C7],Matrice),
+%
+% Vgagné prend cette matrice, et verifie les verticale et les diagonale.
+%
+% En parametre d'entre nous avons la Couleur, et la Matrice.
+% Nous avons 3 verificaitons de vgagne /3. Une horizontal, une verticale
+% et une en diagonale.
+%
+% Nous nous basons sur la longueur des liste généré pour trouver si les
+% circonstances sont remplies.
+%
+% en cas de victoire, nous arretons le programme.
+%
 
 
 vgagne(Couleur,Mat):-
@@ -128,11 +213,11 @@ vgagne(Couleur,Mat):-
 
 vgagne(Couleur,Mat):-
                               append(_,[Colonne1,Colonne2,Colonne3,Colonne4|_],Mat),
-                              append(Vide1,[Couleur|_],Colonne1),write('vid1'),
+                              append(Vide1,[Couleur|_],Colonne1),
 
-                              append(Vide2,[Couleur|_],Colonne2),write('vid1'),
-                              append(Vide3,[Couleur|_],Colonne3),write('vid1'),
-                              append(Vide4,[Couleur|_],Colonne4),write('vid1'),
+                              append(Vide2,[Couleur|_],Colonne2),
+                              append(Vide3,[Couleur|_],Colonne3),
+                              append(Vide4,[Couleur|_],Colonne4),
                               length(Vide1,Mat1), length(Vide2,Mat2),
                               length(Vide3,Mat3), length(Vide4,Mat4),
                               Mat2 is Mat1+1, Mat3 is Mat2+1, Mat4 is Mat3+1,write('victoire');
@@ -152,6 +237,9 @@ vgagne(Couleur,Mat):-
 % La fonction verifier reponse s'assurer que la reponse correspond au
 % bon parametre et ensuite affiche la reponse au client. Si ce n'est pas
 % le cas, elle echoue et on obtient un false.
+%
+% C'est essentiellement un lecture au clavier, avec une verification si
+% l'utilisateur a bien entrée les bonnes réponses.
 % %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 question_utilisateur(Reponse):-write('Placer votre pièce: reponse sous forme 1. 2. 3. 4. 5. 6. 7.'),nl,
@@ -159,17 +247,28 @@ question_utilisateur(Reponse):-write('Placer votre pièce: reponse sous forme 1. 
 
 verifier_reponse(Reponse):-((Reponse=1);(Reponse=2);(Reponse=3);
                            (Reponse=4);(Reponse=5);(Reponse=6);(Reponse=7)),
-                           write('votre reponse:'),write(Reponse),nl,nl;abort.
+                           write('votre reponse:'),write(Reponse),nl,nl;etat_final().
 
 
 
 %%%%%%%%%%%%%%%%%%%
 %Fonction de remplacement de liste et de concenation de listes
 %Remplace une liste par une autre et concatene une liste
+%
+%paramètre d'entré: une liste
+%paramètre de sortie : une liste remplacée
 %%%%%%%
 replace_list([], []).
 replace_list([n|X], [a|Y]) :- replace_list(X, Y).
 replace_list([H|X], [H|Y]) :- H \= n, replace_list(X, Y).
+
+
+
+%%%%%%%%%%%%%%%%%%%
+%Fonction de concaténation de liste
+%Remplace une liste par une autre et concatene une liste
+%%%%%%%
+
 
 conc([], L, L).
 conc([X|R1], L2, [X|R3]):- conc(R1, L2, R3).
@@ -181,16 +280,22 @@ conc([X|R1], L2, [X|R3]):- conc(R1, L2, R3).
 % retourne false pour le moment.
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Place un jeton dans la colonne s'il y a une place disponible.
-placer_jeton(Colonne,Jeton,Resultat):-conc(Colonne,Jeton,Resultat),valider_place_disponible(Colonne).
+%
+% Paramètre d'entré : Colonne et Jeton
+% Paramètre de sortie : une Liste resultat à jour avec l'entrée ajoutée.
+placer_jeton(Colonne,Jeton,Resultat):-conc(Colonne,Jeton,Resultat),valider_place_disponible(Colonne);nl,
+                                                             write('Impossible d ''ajouter une pièce, le tour est perdu.'),true.
 
-%Valider s'il reste de la place dans une colonne pour placer une piÃ¨ce.
-%retourne true ou false
+%!%%%
+%Validation
+%%%% Valider s'il reste de la place dans une colonne pour placer une
+% pièce. retourne true ou false
 valider_place_disponible(Colonne):- length(Colonne, N), N < 7.%write('pieces dans la colone avant ajout: '),write(N),nl,nl.
 
 
 
-valider_verticale(Colonne, CouleurJeton):- compter_verticale(Colonne,
-                                           CouleurJeton, Valeur), Valeur == 4, write("Win:" + CouleurJeton).
+% valider_verticale(Colonne, CouleurJeton):- compter_verticale(Colonne,
+  %                                         CouleurJeton, Valeur), Valeur == 4, write("Win:" + CouleurJeton).
 
 
 % @Stephane Ma nouvelle fonction valider_verticale.
@@ -201,18 +306,6 @@ valider_verticale(Colonne, CouleurJeton):- compter_verticale(Colonne,
 valider_horizontale().
 valider_diagonale().
 
-compter_verticale(_,[],0).
-% compter_verticale(Joueur,[_|ValeurTrouve],1):- not(ValeurTrouve ==
-% Joueur).
-compter_verticale(Joueur,[_|ValeurTrouve],Valeur):- %compter_verticale(Joueur,Colonne,ValeurS),
-			  Valeur is ValeurS+1,write(ValeurS).
-
-%  Fonction membre de la liste, retourne vrai se il y a une membre dans
-%  la liste.
-%
-%membre2(X,[X|R]).
-%membre2(X,[Y|R]):- not(X=Y), membre2(X,R).
-
 %Fonction inverse la liste. Vu que l'on doit lire parfois le dernier
 %  entré dans la liste, c'est pratique.
 %   Appel : inverse([a,b,c],X,[]).  Body sera le resultat.
@@ -222,65 +315,107 @@ inverse([],Body,Body).
 inverse([Head|Tail],Body,Acc) :- inverse(Tail,Body,[Head|Acc]).
 
 
-% compter_verticale(Joueur,[Joueur|Colonne],Valeur):-
-% compter_verticale(Joueur,Colonne,ValeurS),
-			 % Valeur is ValeurS+1.
+% Fonction qui calcule notre valeur heuristique de chaque colonnes
+% Nous avons besoin des 7 colonnes en entrées, le parametres
+% Valeurheuristique est retournées au client et la couleurs est un
+% parametre d'entrée. ColonneFinale sera retourné aussi.
+%
+% Les parametres de retour sont  : Valeurheuristique et ColonneFinale.
+%
+% Les parametre d'entrées sont : 7 Liste (M1,M2,M3,M4,M5,M6,M7,) et la
+% Couleur.
+%
+% Cette fonction est automatiquement appelé par le programme jeux.
+%
 
 
 
 
 heuristique(M1,M2,M3,M4,M5,M6,M7,Valeurheuristique,Couleur,ColoneFinale):-
                             inverse(M1,X,[]),valider_verticale(X,Couleur,Val1),
-                                      append([['C1',Val1]],[],LR),
+                                      append([[1,Val1]],[],LR),
                                       append([],[Val1],Mat1), !,
                             inverse(M2,X2,[]),valider_verticale(X2,Couleur,Val2),
-                                      append([['C2',Val2]],LR,LR2),
+                                      append([[2,Val2]],LR,LR2),
                                       append([Val2],Mat1,Mat2),!,
                             inverse(M3,X3,[]),valider_verticale(X3,Couleur,Val3),
-                                       append([['C3',Val3]],LR2,LR3),
+                                       append([[3,Val3]],LR2,LR3),
                                        append([Val3],Mat2,Mat3),!,
                             inverse(M4,X4,[]),valider_verticale(X4,Couleur,Val4),
-                                       append([['C4',Val4]],LR3,LR4),
+                                       append([[4,Val4]],LR3,LR4),
                                        append([Val4],Mat3,Mat4),!,
                             inverse(M5,X5,[]),valider_verticale(X5,Couleur,Val5),
-                                       append([['C5',Val5]],LR4,LR5),
+                                       append([[5,Val5]],LR4,LR5),
                                        append([Val5],Mat4,Mat5),!,
                             inverse(M6,X6,[]),valider_verticale(X6,Couleur,Val6),
-                                       append([['C6',Val6]],LR5,LR6),
+                                       append([[6,Val6]],LR5,LR6),
                                        append([Val6],Mat5,Mat6),!,
                             inverse(M7,X7,[]),valider_verticale(X7,Couleur,Val7),
-                                       append([['C7',Val7]],LR6,LR7),
+                                       append([[7,Val7]],LR6,LR7),
                                         append([Val7],Mat6,Mat7),!,
                             largest(Mat7,0,Retour),member([EmplacementMin,Retour],LR7),Valeurheuristique=Retour,ColoneFinale=EmplacementMin.
 
 
-choixdeminmax(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMin,'J',ColoneFinaleMin):-
-                               heuristique(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMin,'J',ColoneFinaleMin),
-                               nl,nl,write(ValeurHeuristiqueMin),nl,write(ColoneFinaleMin),
-                               heuristique(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMax,'R',ColoneFinaleMax),
-                               nl,nl,write(ValeurHeuristiqueMax),nl,write(ColoneFinaleMax) .
+
+% Fonction prend les listes de colonnes
+% Nous avons besoin des 7 colonnes en entrées et la couleurs est un
+% parametre d'entrée.le parametres
+% ColonneFinale est retournées au client . ValeurHeuristique sera retourné
+% aussi.
+%
+% Les parametres de retour sont  : ColonneFinale.
+%
+% Les parametre d'entrées sont : 7 Liste (M1,M2,M3,M4,M5,M6,M7,)
+%
+% Cette fonction est automatiquement appelé par le programme jeux.
+%
 
 
 
+choixdeminmax(C1,C2,C3,C4,C5,C6,C7,ColonneFinale):-
+                               heuristique(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMin,'R',ColoneFinaleMin),
+                               nl,nl,write('Heuristie Min gagnante:  '),write(ValeurHeuristiqueMin),nl,write(ColoneFinaleMin),
+                               heuristique(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMax,'J',ColoneFinaleMax),
+                               nl,nl,write('Heuristie Max gagnante:  '),write(ValeurHeuristiqueMax),nl,write(ColoneFinaleMax),
+                               ValeurHeuristiqueMax - ValeurHeuristiqueMin >= 0,
+                                    %Max gagne
+                                    ColonneFinale = ColoneFinaleMax ;
+                                    %Min gagne
+                                    ColonneFinale =ColoneFinaleMin.
+
+
+
+
+%  Fonction qui prend une liste et de chiffre et retourne la valeur
+%  maximale de cette liste
+%
+%   Parametre entre : Liste  ,
+%   Parametre sortie : Retour.
+%   Elle se rapelle au besoin. Si la liste est vide,
+%   elle retourne ce qu'elle contenait.
+%
+%
+%
 
 largest([X|Xs], Retour) :- largest(Xs, X, Retour).
 
 largest([], Retour, Retour).
+
 largest([X|Xs], Mat, Retour) :-
     Mat1 is max(X, Mat),
     largest(Xs, Mat1, Retour).
 
 
-max().
 
+% valider_verticale(X,Colone,Valeur)
 
-
-% valider_verticale(X,Colone,Valeur) retourne le nombre d'instance en
+% retourne le nombre d'instance en
 % debut de liste identique pour l'heuristique selon la couleur X.
-% La Valeur est l'heuristique.
+% La valeur finaleur retourné de  Valeur est l'heuristique.
 % Cette fonction est joint a la fonction d'inversion de liste pour
 % avoir les entres en debut.
-%
+%   paramètre d'entré  :  Colone , Couleur
+%   Parametre de sortie , la valeur
 %
 
 valider_verticale([], _, 1).
