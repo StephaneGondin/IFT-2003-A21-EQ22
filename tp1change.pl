@@ -6,11 +6,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Etat initial
+%État initial
 %
-% colone X row    ( 7 x 6 )
+% ( 7 x 6 ) vide, sans données
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
+
 
 
 
@@ -19,7 +19,7 @@ etat_initial([],[],[],[],[],[],[]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Etat final
-% Un joeur a gagné ou le jeux s'arrête
+%Un joueur a gagné ou le jeux s'arrête
 %
 %
 
@@ -29,18 +29,19 @@ etat_final(Joueur):- write('Le joueur suivant a gagné'),nl,nl,write(Joueur).
 
 
 %%%
-% Appel Du Jeux dans la fonction jeux . Le jeux se passe les parametres
-% colonne et appelle les fonctions du joueur a l'IA. Les conditions de
-% validation sont également appelées dans le mouvement.
+% Appel Du joueur dans la fonction jeux . Le jeux se passe les
+% parametres colonnes et appelle les fonctions du joueur à l'IA. Les
+% conditions de validations de fin de jeux sont appellé durant le jeux.
 %
-% paramètre a envoyer : 7 colonnes
+% paramètre a envoyer : 7 colonnes au début du jeux. Fait
+% automatiquement.
 %
 % Ce prédicat est ESSENTIEL, car il démarre le jeux.
 %
 %
 % Appel du Jeux :    jeux.
 %
-% Les
+%
 %
 %%%
 
@@ -53,20 +54,30 @@ jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
        nl,nl,
        jeux_recurrent(Un,Deux,Trois,Quatre,Cinq,Six,Sept).
 
-
+%!                                     %%
+%Corp principal du programme
+%
+%Recoit les 7 colonnes en paramètres, ce programme est récursif.
+% Cette partie principale gère principalement l'interation avec
+% l'utilisateur en affichant les colonnes demandant à quel endroit
+% jouer.
+% le joueur met ensuite sont jeton dans une liste temporaire Envoie_A_AI
+%
+% Nous placons ensuite les parametre de Envoie_A_AI pour l'envoyer à la
+% prochaine partie du programme, transfert_AI, avec toute les colonnes
+% en paramètre.
 
 jeux_recurrent(C1,C2,C3,C4,C5,C6,C7):-            voirboard(C1,C2,C3,C4,C5,C6,C7),
-                                                  %fonction tour utilisateur
-                                                    question_utilisateur(Reponse),
+                                                  question_utilisateur(Reponse),
+                                                  swap(C1,C2,C3,C4,C5,C6,C7,Reponse,Retour),  % Retour = liste temporaire
+                                                  placer_jeton(Retour,['R'],Envoie_A_AI),  %Place les jetons dans une liste Envoie_A_AI
+                                                  transfert_AI(C1,C2,C3,C4,C5,C6,C7,Reponse,Envoie_A_AI).
 
-                                                    swap(C1,C2,C3,C4,C5,C6,C7,Reponse,Retour),%write(Retour),
-                                                    placer_jeton(Retour,['R'],Envoie_A_AI),
-                                                    transfert_AI(C1,C2,C3,C4,C5,C6,C7,Reponse,Envoie_A_AI).
-                                                    %jeux_recurrent(Envoie_A_AI,C2,C3,C4,C5,C6,C7).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Interface visuelle de base
+%Affiche les colones à la demande.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 voirboard(Un,Deux,Trois,Quatre,Cinq,Six,Sept):-voir(Un,'1'),voir(Deux,'2'),voir(Trois,'3'),voir(Quatre,'4'),
@@ -76,14 +87,11 @@ voir(X,Lettre):- write(X),write(Lettre),nl.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Swap semble long comme fonction, mais elle est bien simple. Elle
-% recoit les colonnes en parametres. Elle recoit le parametre Y, qui
-% proviens de l'utilisateur (un '1','2',etc) et retourne la colone dans
-% Retour. On fait afficher la ligne grace a voir pour avoir un visuel.
-% ex: Si Y==1 , Retour sera l'équivalent de la Liste C1
-% ==== Elle nous permet a partir de chiffre de selectionner les
+% Swap recoit les colonnes en parametre.Il recoit le parametre Y, qui
+% proviens de l'utilisateur (un '1','2',etc) et retourne la colonne dans
+% Retour. Il nous permet a partir de chiffre de selectionner les
 % colonne, le ! arrete la fonction apres avoir trouvé le Y, sans
-% continuer dans la recherche vu que c'est des ou=
+% continuer dans la recherche vu que c'est des ou.
 %
 swap(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,replace_list(C1,Retour),!;Y==2,replace_list(C2,Retour),!;Y==3,
                                                     replace_list(C3,Retour),!;Y==4,replace_list(C4,Retour),!;Y==5,
@@ -98,10 +106,10 @@ swap(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,replace_list(C1,Retour),!;Y==2,replac
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Transfert_Ai est similaire a swap, elle transfert à l'AI la matrice
-% modifié plutot que le parametre C% original. Ca permet la recursivite
-% de continuer. Retour est envoye a différent endroit selon le parametre
-% Y. ! arrete la recherche.
+% Transfert_Ai est similaire a swap, elle transfert à l'AI la liste
+% modifié plutot que le parametre Liste original. Ca permet la
+% recursivite de continuer. Retour est envoye a différent endroit selon
+% le parametre Y. ! arrete la recherche.
 transfert_AI(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,jeux_AI(Retour,C2,C3,C4,C5,C6,C7),!;Y==2,jeux_AI(C1,Retour,C3,C4,C5,C6,C7),!;Y==3,
                                                     jeux_AI(C1,C2,Retour,C4,C5,C6,C7),!;Y==4,jeux_AI(C1,C2,C3,Retour,C5,C6,C7),!;Y==5,
                                                     jeux_AI(C1,C2,C3,C4,Retour,C6,C7),!;Y==6,jeux_AI(C1,C2,C3,C4,C5,Retour,C7),!;Y==7,
@@ -110,33 +118,37 @@ transfert_AI(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,jeux_AI(Retour,C2,C3,C4,C5,C6
 
 %%%%%%%%%%%%
 %Fonction du tour è l'ordinateur
+%On affiche pour l'utilisateur l'état.
+%L'ordinateur choisi en premier le min et le max avec les Colonnes.
+% Nous effectuons ensuite le transfert dans une liste temporaire pour le
+% placement de son jeton ( une append ).
 %
+% Nous tranferons ensuite la matrice pour son traitement.
 %
-%%%%%%
+% Entrée : 7 colonnes.
+%
+% Sortie : Transfert a la Matrice,7 listes dont une  avec la Colonne de
+% min max trouvée et une liste modifiée.
+% %%%%
 
 jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),
-                               %heuristique(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMin,'J',ColoneFinaleMin),
-                               %nl,nl,write(ValeurHeuristiqueMin),nl,write(ColoneFinaleMin),
-                               %heuristique(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMax,'R',ColoneFinaleMax),
-                               %nl,nl,write(ValeurHeuristiqueMax),nl,write(ColoneFinaleMax),
                                choixdeminmax(C1,C2,C3,C4,C5,C6,C7,ColonneFinale),
                                nl,write('choix'),nl,write(ColonneFinale),
-                               %replace_list(C1,Liste_Jeux_AI),%choix emplacement Ai, foncion minmax choisi ici
                                swap(C1,C2,C3,C4,C5,C6,C7,ColonneFinale,Liste_Jeux_AI),
                                placer_jeton(Liste_Jeux_AI,['J'],Temporaire),!,  %Temporaire est une liste contenant le choix de l'AI par min max
-                               transfert_A_Matrice(C1,C2,C3,C4,C5,C6,C7,ColonneFinale,Temporaire),
+                               transfert_A_Matrice(C1,C2,C3,C4,C5,C6,C7,ColonneFinale,Temporaire).
 
 
 
 
-                               append([],[Temporaire,C2,C3,C4,C5,C6,C7],Matrice),   % a modifier, mais cette ligne devra envoyer dans
+                             %  append([],[Temporaire,C2,C3,C4,C5,C6,C7],Matrice),   % a modifier, mais cette ligne devra envoyer dans
                                                                                    % la matrice le choix selon la colone choisie
-                               nl,voir(Matrice,'La matrice :  '),nl,   % vision, a enlever
-                               %compter_verticale('J',Temporaire,Zero),Zeros is Zero,write(Zeros),   %fonction inclus de min max, sera enlever
-                               vgagne('R',Matrice),  %validation de qui gagne
-                               vgagne('J',Matrice),   %validation
-                               write(Temporaire),  % a enlever
-                               jeux_recurrent(C1,C2,C3,C4,C5,C6,C7).  % on va envoyer selon ce que l'ai a choisi
+                             %  nl,voir(Matrice,'La matrice :  '),nl,   % vision, a enlever
+                            %   %compter_verticale('J',Temporaire,Zero),Zeros is Zero,write(Zeros),   %fonction inclus de min max, sera enlever
+                            %   vgagne('R',Matrice),  %validation de qui gagne
+                            %   vgagne('J',Matrice),   %validation
+                            %   write(Temporaire),  % a enlever
+                            %   jeux_recurrent(C1,C2,C3,C4,C5,C6,C7).  % on va envoyer selon ce que l'ai a choisi
 
 
 
@@ -220,8 +232,8 @@ vgagne(Couleur,Mat):-
                               append(Vide4,[Couleur|_],Colonne4),
                               length(Vide1,Mat1), length(Vide2,Mat2),
                               length(Vide3,Mat3), length(Vide4,Mat4),
-                              Mat2 is Mat1+1, Mat3 is Mat2+1, Mat4 is Mat3+1,write('victoire');
-                              Mat2 is Mat1-1, Mat3 is Mat2-1, Mat4 is Mat3-1,write('victoire').
+                              Mat2 is Mat1+1, Mat3 is Mat2+1, Mat4 is Mat3+1,write('victoire').
+                              %Mat2 is Mat1-1, Mat3 is Mat2-1, Mat4 is Mat3-1,write('victoire').
 
 
 
@@ -288,23 +300,21 @@ placer_jeton(Colonne,Jeton,Resultat):-conc(Colonne,Jeton,Resultat),valider_place
 
 %!%%%
 %Validation
-%%%% Valider s'il reste de la place dans une colonne pour placer une
+% Valider s'il reste de la place dans une colonne pour placer une
 % pièce. retourne true ou false
 valider_place_disponible(Colonne):- length(Colonne, N), N < 7.%write('pieces dans la colone avant ajout: '),write(N),nl,nl.
 
 
 
-% valider_verticale(Colonne, CouleurJeton):- compter_verticale(Colonne,
-  %                                         CouleurJeton, Valeur), Valeur == 4, write("Win:" + CouleurJeton).
+%!
+%   Ces fonctions reste a implanter dans le programmes.
+%   La diagonale et l'horizontal devront etre des fonctions future.
+%
 
-
-% @Stephane Ma nouvelle fonction valider_verticale.
-% valider_verticale(Colonne, CouleurJeton, ValeurHeuristique)
-% où Colonne est la colonne à valider verticalement,
-% CouleurJeton est la couleur du jeton à valider
-% et ValeurHeuristique est la valeur de l'heuristique à l'emplacement vide dans la colonne.
 valider_horizontale().
 valider_diagonale().
+
+
 
 %Fonction inverse la liste. Vu que l'on doit lire parfois le dernier
 %  entré dans la liste, c'est pratique.
@@ -379,7 +389,7 @@ choixdeminmax(C1,C2,C3,C4,C5,C6,C7,ColonneFinale):-
                                nl,nl,write('Heuristie Valeur Max gagnante:  '),write(ValeurHeuristiqueMax),nl,write(ColoneFinaleMax),!,
                               % ValeurHeuristiqueMax - ValeurHeuristiqueMin >= 0,
                                     %Max gagne
-%                                    ColonneFinale = ColoneFinaleMax ;
+                                  %  ColonneFinale = ColoneFinaleMax ;
                                     %Min gagne
                                     ColonneFinale =ColoneFinaleMin.
 
@@ -427,14 +437,14 @@ valider_verticale([X| Colonne], Couleur, ValeurHeuristique):- X == Couleur, vali
 % Jeux d'essais pour faciliter tests d'intégration.
 %%%%%%%%%%%%%%%%%%
 %
-%
+% Ne pas oublier de se servir de l'appel de jeux. pour jouer au jeux.
 %
 %
 
 % Ajoute une valeur a la colonne Mat, Valider place disponible est
 % également appelé pour valider le nombre de place restantes dans la
 % colonne.
-placer_Colonne1():- placer_jeton(Mat1,['R'],Colonne).
+placer_Colonne1():- placer_jeton([],['R'],Colonne),write(Colonne).
 
 
 
@@ -442,14 +452,14 @@ placer_Colonne1():- placer_jeton(Mat1,['R'],Colonne).
 % Ajoute une valeur R a la colonne Colonne, crée une liste Temporaire
 % Mat2 et ajoute dans la Colonne 2 une seconde Valeur J .  Valider place disponible est
 % également appelé.
-placer_Colonne2():- placer_jeton(Mat1,['R'],Colonne),append(Colonne,[], Mat2),
-                                       placer_jeton(Mat2,['J'],Colonne2),write(Colonne2).
+placer_Colonne2():- placer_jeton([],['R'],Colonne),append(Colonne,[], Mat2),
+                                       placer_jeton(Mat2,['R'],Colonne2),write(Colonne2).
 
 
 % Ajoute 4 Valeur, similaire au deux procédure précédente, crée une
 % liste Temporaire et ajoute la valeur.  Valider place disponible est
 % également appelé.
-placer_Colonne4():- placer_jeton(Mat1,['R'],Colonne),
+placer_Colonne4():- placer_jeton([],['R'],Colonne),
                                        append(Colonne,[], Mat2),
                                        placer_jeton(Mat2,['J'],Colonne2),
                                        append(Colonne2,[], Mat3),
@@ -459,12 +469,36 @@ placer_Colonne4():- placer_jeton(Mat1,['R'],Colonne),
 
 
 
+% Place un jeton, ajoute dans une liste liste temporaire, et sorts sa
+% valeur Heuristique selon la liste.
+inverse_listeheuristique():- placer_jeton([],['R'],Colonne),append(Colonne,[], Mat2),
+                                       placer_jeton(Mat2,['R'],Colonne2),
+                                       append(Colonne2,[], Mat3),
+                                       placer_jeton(Mat3,['J'],Colonne3),
+                                       inverse(Colonne3,X5,[]),valider_verticale(X5,'J',Sortie),write(Sortie).
 
-inverse_Colonne2():- placer_jeton(Mat1,['R'],Colonne),append(Colonne,[], Mat2),
-                                       placer_jeton(Mat2,['J'],Colonne2),
-                                       inverse(Colonne2,X5,[]),valider_verticale(X5,'R',Sortie),write(Sortie).
 
 
+%retourne le chiffre le plus grand dans la liste.
+test_plusgrand():- largest([3,2,6,3,2,4,1],0,Retour),write(Retour).
 
 
-test_Largest():- largest([3,2,6,3,2,4,1],0,Retour),write(Retour).
+% Voici une situation préétablie, , elle correspond au parametre d'entre
+% de heuristique(M1,M2,M3,M4,M5,M6,M7,Valeurheuristique,Couleur,ColoneFinale)
+%
+% Les 7 premiers parametres sont les listes , les autres sont utilisés
+% pour la valeur heurisitques, le choix du jeux et le resultat.
+%
+% Nous imprimons le meilleurx choix de max
+
+test_max:-heuristique(['J','J'],[],['R'],[],['R'],['R'],['J'],Valeurheuristique,'J',ColoneFinale),nl,
+                                       write('Valeur heuristique:'),write(Valeurheuristique),nl,
+                                       write('Colonne:'),write(ColoneFinale).
+% Nous imprimons le meilleurx choix de min
+
+
+test_min:-heuristique(['J','J'],[],['R'],[],['R'],['R'],['J'],Valeurheuristique,'R',ColoneFinale),nl,
+                                       write('Valeur heuristique:'),nl,write(Valeurheuristique),nl,
+                                       write('Colonne:'),write(ColoneFinale).
+
+
