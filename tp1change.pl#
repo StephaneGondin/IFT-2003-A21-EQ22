@@ -427,7 +427,7 @@ valider_verticale([X| Colonne], Couleur, ValeurHeuristique):- X == Couleur, vali
 % Jeux d'essais pour faciliter tests d'intégration.
 %%%%%%%%%%%%%%%%%%
 %
-%
+% Ne pas oubl
 %
 %
 
@@ -459,7 +459,7 @@ placer_Colonne4():- placer_jeton(Mat1,['R'],Colonne),
 
 
 
-
+%Place un jeton, ajoute dans une liste liste temporaire 
 inverse_Colonne2():- placer_jeton(Mat1,['R'],Colonne),append(Colonne,[], Mat2),
                                        placer_jeton(Mat2,['J'],Colonne2),
                                        inverse(Colonne2,X5,[]),valider_verticale(X5,'R',Sortie),write(Sortie).

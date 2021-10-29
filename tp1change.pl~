@@ -430,6 +430,33 @@ valider_verticale([X| Colonne], Couleur, ValeurHeuristique):- X == Couleur, vali
 %
 %
 %
-placer_ligneV1():- placer_jeton(Mat1,['R'],Colonne).
 
-placer_ligneV2():- placer_jeton(Deux,['R'],Colonne),placer_jeton(Deux,['R'],Colonne).
+
+placer_Colonne1():- placer_jeton(Mat1,['R'],Colonne).
+
+
+
+
+
+placer_Colonne2():- placer_jeton(Mat1,['R'],Colonne),append(Colonne,[], Mat2),
+                                       placer_jeton(Mat2,['J'],Colonne2),write(Colonne2).
+
+
+
+placer_Colonne4():- placer_jeton(Mat1,['R'],Colonne),
+                                       append(Colonne,[], Mat2),
+                                       placer_jeton(Mat2,['J'],Colonne2),
+                                       append(Colonne2,[], Mat3),
+                                       placer_jeton(Mat3,['J'],Colonne3),
+                                       append(Colonne3,[], Mat4),
+                                       placer_jeton(Mat4,['R'],Colonne4),write(Colonne4).
+
+
+
+
+inverse_Colonne2():- placer_jeton(Mat1,['R'],Colonne),append(Colonne,[], Mat2),
+                                       placer_jeton(Mat2,['J'],Colonne2),
+                                       inverse(Colonne2,X5,[]),valider_verticale(X5,'R',Sortie),write(Sortie).
+
+
+test_Largest():- largest([3,2,6,3,2,4,1],0,Retour),write(Retour).
