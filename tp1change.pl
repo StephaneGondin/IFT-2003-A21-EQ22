@@ -1,9 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Fais
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-jeton(rouge).
-jeton(jaune).
-tableau(([[],[],[],[],[],[],[]])).
 
 %Ã‰tats de dÃ©part et Ã©tat final
 etat_initial([],[],[],[],[],[],[]).
@@ -23,18 +20,14 @@ etat_final(). %???
 % paramètre a envoyer : 7 colonnes
 %%%
 
-jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),write('     PROLOG     '),
-                                                    nl,nl,write('    EQUIPE 22     '),nl,nl,write('   ____________    '),
-                                                    nl,nl,jeux_recurrent(Un,Deux,Trois,Quatre,Cinq,Six,Sept).
-
-      %     voirboard(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
-       %    question_utilisateur(Reponse),
-       %    swap(Un,Deux,Trois,Quatre,Cinq,Six,Sept,Reponse,Retour),
-       %    voir(Retour,' retour 1 fois'),
-       %    valider_place_disponible(Retour),
-       %    placer_jeton(Retour,jeton(rouge),Resultat),
-       %    write(Resultat).
-
+jeux:- etat_initial(Un,Deux,Trois,Quatre,Cinq,Six,Sept),
+       write('     PROLOG     '),
+       nl,nl,
+       write('    EQUIPE 22   '),
+       nl,nl,
+       write('  ____________ '),
+       nl,nl,
+       jeux_recurrent(Un,Deux,Trois,Quatre,Cinq,Six,Sept).
 
 
 
@@ -46,21 +39,6 @@ jeux_recurrent(C1,C2,C3,C4,C5,C6,C7):-%voirboard(C1,C2,C3,C4,C5,C6,C7),
                                                     placer_jeton(Retour,['R'],Envoie_A_AI),
                                                     transfert_AI(C1,C2,C3,C4,C5,C6,C7,Reponse,Envoie_A_AI).
                                                     %jeux_recurrent(Envoie_A_AI,C2,C3,C4,C5,C6,C7).
-
-                                                  %fonction Ai
-                                                    %valider_place_disponible(Retour),
-
-                                                    %placer_jeton(Retour,jeton(rouge),Resultat),
-                                                    %write(Retour),write(Resultat),write(Reponse),
-                                                    %replace_list(Deux,Resultat),
-                                                    %write(Retour),write(Resultat).
-                                                    %replace_list(Resultat,Retour),
-                                                    %voir(Resultat,'resultat insertion'),
-                                                    %voir(Resultat,'retour ').
-
-                                                   %jeux_recurrent(Un,Deux,Trois,Quatre,Cinq,Six,Sept).
-
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -113,7 +91,11 @@ transfert_AI(C1,C2,C3,C4,C5,C6,C7,Y,Retour):- Y==1,jeux_AI(Retour,C2,C3,C4,C5,C6
 %%%%%%
 
 jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),
-                               min(C1,C2,C3,C4,C5,C6,C7,Test,'J',ListeResultat),
+                               %heuristique(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMin,'J',ColoneFinaleMin),
+                               %nl,nl,write(ValeurHeuristiqueMin),nl,write(ColoneFinaleMin),
+                               %heuristique(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMax,'R',ColoneFinaleMax),
+                               %nl,nl,write(ValeurHeuristiqueMax),nl,write(ColoneFinaleMax),
+                               choixdeminmax(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMin,'J',ColoneFinaleMin),
                                replace_list(C1,Liste_Jeux_AI),%choix emplacement Ai, foncion minmax choisi ici
                                placer_jeton(Liste_Jeux_AI,['J'],Temporaire),  %Temporaire est une liste contenant le choix de l'AI par min max
                                append([],[Temporaire,C2,C3,C4,C5,C6,C7],Matrice),   % a modifier, mais cette ligne devra envoyer dans
@@ -128,7 +110,8 @@ jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),
 
 vgagne(Couleur,Mat):-
                               append(_, [Colonne|_], Mat),
-                              append(_,[Couleur,Couleur,Couleur,Couleur|_],Colonne),write('Ce joeur a gagne:'),
+                              append(_,[Couleur,Couleur,Couleur,Couleur|_],Colonne),
+                              write('Ce joeur a gagne:'),
                               nl,write(Couleur),nl,write('Félicitations'),nl,abort.
 
 vgagne(Couleur,Mat):-
@@ -137,22 +120,23 @@ vgagne(Couleur,Mat):-
                               append(Vide2,[Couleur|_],Colonne2),
                               append(Vide3,[Couleur|_],Colonne3),
                               append(Vide4,[Couleur|_],Colonne4),
-                              (length(Vide1,N), length(Vide2,N), length(Vide3,N), length(Vide4,N)),write('Ce joeur a gagne:'),
+                              (length(Vide1,N), length(Vide2,N), length(Vide3,N), length(Vide4,N)),
+                              write('Ce joeur a gagne:'),
                               nl,write(Couleur),nl,write('Félicitations'),nl,nl,abort;nl.
 
 
 
 vgagne(Couleur,Mat):-
-                 append(_,[Colonne1,Colonne2,Colonne3,Colonne4|_],Mat),
-                 append(Vide1,[Couleur|_],Colonne1),write('vid1'),
+                              append(_,[Colonne1,Colonne2,Colonne3,Colonne4|_],Mat),
+                              append(Vide1,[Couleur|_],Colonne1),write('vid1'),
 
-                 append(Vide2,[Couleur|_],Colonne2),write('vid1'),
-                 append(Vide3,[Couleur|_],Colonne3),write('vid1'),
-                 append(Vide4,[Couleur|_],Colonne4),write('vid1'),
-                 length(Vide1,Mat1), length(Vide2,Mat2),
-                 length(Vide3,Mat3), length(Vide4,Mat4),
-                 Mat2 is Mat1+1, Mat3 is Mat2+1, Mat4 is Mat3+1,write('victoire');
-                 Mat2 is Mat1-1, Mat3 is Mat2-1, Mat4 is Mat3-1,write('victoire').
+                              append(Vide2,[Couleur|_],Colonne2),write('vid1'),
+                              append(Vide3,[Couleur|_],Colonne3),write('vid1'),
+                              append(Vide4,[Couleur|_],Colonne4),write('vid1'),
+                              length(Vide1,Mat1), length(Vide2,Mat2),
+                              length(Vide3,Mat3), length(Vide4,Mat4),
+                              Mat2 is Mat1+1, Mat3 is Mat2+1, Mat4 is Mat3+1,write('victoire');
+                              Mat2 is Mat1-1, Mat3 is Mat2-1, Mat4 is Mat3-1,write('victoire').
 
 
 
@@ -197,7 +181,8 @@ conc([X|R1], L2, [X|R3]):- conc(R1, L2, R3).
 % retourne false pour le moment.
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Place un jeton dans la colonne s'il y a une place disponible.
-placer_jeton(Colonne,Jeton,Resultat):-conc(Colonne,Jeton,Resultat),valider_place_disponible(Colonne).
+placer_jeton(Colonne,Jeton,Resultat):-conc(Colonne,Jeton,Resultat),valider_place_disponible(Colonne);
+                                                             write('Impossible d ''ajouter une pièce, le tour est perdu.'),true.
 
 %Valider s'il reste de la place dans une colonne pour placer une piÃ¨ce.
 %retourne true ou false
@@ -217,11 +202,12 @@ valider_verticale(Colonne, CouleurJeton):- compter_verticale(Colonne,
 valider_horizontale().
 valider_diagonale().
 
-compter_verticale(_,[],0).
+%compter_verticale(_,[],0).
 % compter_verticale(Joueur,[_|ValeurTrouve],1):- not(ValeurTrouve ==
 % Joueur).
-compter_verticale(Joueur,[_|ValeurTrouve],Valeur):- %compter_verticale(Joueur,Colonne,ValeurS),
-			  Valeur is ValeurS+1,write(ValeurS).
+% compter_verticale(Joueur,[_|ValeurTrouve],Valeur):-
+% %compter_verticale(Joueur,Colonne,ValeurS),
+		%	  Valeur is ValeurS+1,write(ValeurS).
 
 %  Fonction membre de la liste, retourne vrai se il y a une membre dans
 %  la liste.
@@ -242,23 +228,42 @@ inverse([Head|Tail],Body,Acc) :- inverse(Tail,Body,[Head|Acc]).
 % compter_verticale(Joueur,Colonne,ValeurS),
 			 % Valeur is ValeurS+1.
 
-min(M1,M2,M3,M4,M5,M6,M7,Value,Couleur,ListeResultat):-
-                            inverse(M1,X,[]),valider_verticale(X,Couleur,Val1),nl,append([],['C1',Val1],ListeResultat),nl,write(Val1),
-                                      append([],[Val1],Mat1), !,
-                            inverse(M2,X2,[]),valider_verticale(X2,Couleur,Val2),nl,append(['C2',Val2],ListeResultat,ListeResultat2),write(Val2),
-                                      append([Val2],Mat1,Mat2),!,
-                            inverse(M3,X3,[]),valider_verticale(X3,Couleur,Val3),nl,append(['C3',Val3],ListeResultat2,ListeResultat3),write(Val3),
-                                       append([Val3],Mat2,Mat3),!,
-                            inverse(M4,X4,[]),valider_verticale(X4,Couleur,Val4),nl,append(['C4',Val4],ListeResultat3,ListeResultat4),write(Val4),
-                                       append([Val4],Mat3,Mat4),!,
-                            inverse(M5,X5,[]),valider_verticale(X5,Couleur,Val5),nl,append(['C5',Val5],ListeResultat4,ListeResultat5),write(Val5),
-                                       append([Val5],Mat4,Mat5),!,
-                            inverse(M6,X6,[]),valider_verticale(X6,Couleur,Val6),nl,append(['C6',Val6],ListeResultat5,ListeResultat6),write(Val6),
-                                       append([Val6],Mat5,Mat6),!,
-                                       inverse(M7,X7,[]),valider_verticale(X7,Couleur,Val7),nl,append(['C7',Val7],ListeResultat6,ListeResultat7),                                          append([Val7],Mat6,Mat7) ,write(ListeResultat7),nl,write(Mat7),
-                             largest(Mat7,0,Retour),write(Retour).
 
-%
+
+
+heuristique(M1,M2,M3,M4,M5,M6,M7,Valeurheuristique,Couleur,ColoneFinale):-
+                            inverse(M1,X,[]),valider_verticale(X,Couleur,Val1),
+                                      append([['C1',Val1]],[],LR),
+                                      append([],[Val1],Mat1), !,
+                            inverse(M2,X2,[]),valider_verticale(X2,Couleur,Val2),
+                                      append([['C2',Val2]],LR,LR2),
+                                      append([Val2],Mat1,Mat2),!,
+                            inverse(M3,X3,[]),valider_verticale(X3,Couleur,Val3),
+                                       append([['C3',Val3]],LR2,LR3),
+                                       append([Val3],Mat2,Mat3),!,
+                            inverse(M4,X4,[]),valider_verticale(X4,Couleur,Val4),
+                                       append([['C4',Val4]],LR3,LR4),
+                                       append([Val4],Mat3,Mat4),!,
+                            inverse(M5,X5,[]),valider_verticale(X5,Couleur,Val5),
+                                       append([['C5',Val5]],LR4,LR5),
+                                       append([Val5],Mat4,Mat5),!,
+                            inverse(M6,X6,[]),valider_verticale(X6,Couleur,Val6),
+                                       append([['C6',Val6]],LR5,LR6),
+                                       append([Val6],Mat5,Mat6),!,
+                            inverse(M7,X7,[]),valider_verticale(X7,Couleur,Val7),
+                                       append([['C7',Val7]],LR6,LR7),
+                                        append([Val7],Mat6,Mat7),!,
+                            largest(Mat7,0,Retour),member([EmplacementMin,Retour],LR7),Valeurheuristique=Retour,ColoneFinale=EmplacementMin.
+
+
+choixdeminmax(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMin,'J',ColoneFinaleMin):-
+                               heuristique(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMin,'J',ColoneFinaleMin),
+                               nl,nl,write(ValeurHeuristiqueMin),nl,write(ColoneFinaleMin),
+                               heuristique(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMax,'R',ColoneFinaleMax),
+                               nl,nl,write(ValeurHeuristiqueMax),nl,write(ColoneFinaleMax) .
+
+
+
 
 largest([X|Xs], Retour) :- largest(Xs, X, Retour).
 
@@ -268,7 +273,6 @@ largest([X|Xs], Mat, Retour) :-
     largest(Xs, Mat1, Retour).
 
 
-            %posverticale(Couleur,M1,0,Sorties);nl,nl,write('valeur de position:'),nl,write(Sorties),nl.
 max().
 
 
@@ -280,8 +284,6 @@ max().
 % avoir les entres en debut.
 %
 %
-
-
 
 valider_verticale([], _, 1).
 valider_verticale([X| _], Couleur, 1):- not(X == Couleur), !.

@@ -21,9 +21,9 @@
 % valider_diagonale().
 
 % % @Stephane Ma nouvelle fonction valider_verticale.
-% % valider_verticale(Colonne, CouleurJeton, ValeurHeuristique) 
-% % où Colonne est la colonne à valider verticalement, 
-% % CouleurJeton est la couleur du jeton à valider 
+% % valider_verticale(Colonne, CouleurJeton, ValeurHeuristique)
+% % où Colonne est la colonne à valider verticalement,
+% % CouleurJeton est la couleur du jeton à valider
 % % et ValeurHeuristique est la valeur de l'heuristique à l'emplacement vide dans la colonne.
 % valider_verticale([], _, 1).
 % valider_verticale([X| _], Couleur, 1):- not(X == Couleur), !.
@@ -131,7 +131,7 @@ calculer(Colonne, ValeurHeuristique):-
     ValHeuristiqueDiagonale2 is ValHeuristiqueDiagonale2Droite + ValHeuristiqueDiagonale2Gauche -1,
     %Obtenir la plus grande valeur
     max_list([ValeurHeuristiqueVerticale, ValeurHeuristiqueHorizontale, ValHeuristiqueDiagonale1, ValHeuristiqueDiagonale2], ValeurHeuristique).
-    
+
 
 %%%%%%%%%%%%%%%%%%
 % Jeux d'essais pour faciliter tests.
