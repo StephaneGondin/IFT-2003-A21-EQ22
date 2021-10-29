@@ -24,7 +24,7 @@ etat_initial([],[],[],[],[],[],[]).
 %
 
 
-etat_final():-nl,write('Arret du jeux').
+etat_final():-nl,write('Arret du jeux'),abort.
 etat_final(Joueur):- write('Le joueur suivant a gagné'),nl,nl,write(Joueur).
 
 
@@ -123,7 +123,7 @@ jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),
                                nl,write('choix'),nl,write(ColonneFinale),
                                %replace_list(C1,Liste_Jeux_AI),%choix emplacement Ai, foncion minmax choisi ici
                                swap(C1,C2,C3,C4,C5,C6,C7,ColonneFinale,Liste_Jeux_AI),
-                               placer_jeton(Liste_Jeux_AI,['J'],Temporaire),  %Temporaire est une liste contenant le choix de l'AI par min max
+                               placer_jeton(Liste_Jeux_AI,['J'],Temporaire),!,  %Temporaire est une liste contenant le choix de l'AI par min max
                                transfert_A_Matrice(C1,C2,C3,C4,C5,C6,C7,ColonneFinale,Temporaire),
 
 
@@ -373,17 +373,15 @@ heuristique(M1,M2,M3,M4,M5,M6,M7,Valeurheuristique,Couleur,ColoneFinale):-
 
 
 choixdeminmax(C1,C2,C3,C4,C5,C6,C7,ColonneFinale):-
-                               heuristique(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMin,'R',ColoneFinaleMin),
-                               nl,nl,write('Heuristie Min gagnante:  '),write(ValeurHeuristiqueMin),nl,write(ColoneFinaleMin),
-                               heuristique(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMax,'J',ColoneFinaleMax),
-                               nl,nl,write('Heuristie Max gagnante:  '),write(ValeurHeuristiqueMax),nl,write(ColoneFinaleMax),
-                               ValeurHeuristiqueMax - ValeurHeuristiqueMin >= 0,
+                               heuristique(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMin,'R',ColoneFinaleMin),!,
+                               nl,nl,write('Heuristie Valeur Min gagnante:  '),write(ValeurHeuristiqueMin),nl,write(ColoneFinaleMin),!,
+                               heuristique(C1,C2,C3,C4,C5,C6,C7,ValeurHeuristiqueMax,'J',ColoneFinaleMax),!,
+                               nl,nl,write('Heuristie Valeur Max gagnante:  '),write(ValeurHeuristiqueMax),nl,write(ColoneFinaleMax),!,
+                              % ValeurHeuristiqueMax - ValeurHeuristiqueMin >= 0,
                                     %Max gagne
-                                    ColonneFinale = ColoneFinaleMax ;
+%                                    ColonneFinale = ColoneFinaleMax ;
                                     %Min gagne
                                     ColonneFinale =ColoneFinaleMin.
-
-
 
 
 %  Fonction qui prend une liste et de chiffre et retourne la valeur
@@ -421,3 +419,17 @@ largest([X|Xs], Mat, Retour) :-
 valider_verticale([], _, 1).
 valider_verticale([X| _], Couleur, 1):- not(X == Couleur), !.
 valider_verticale([X| Colonne], Couleur, ValeurHeuristique):- X == Couleur, valider_verticale(Colonne, Couleur, Val1), ValeurHeuristique is Val1 + 1.
+
+
+
+
+%%%%%%%%%%%%%%%%%%
+% Jeux d'essais pour faciliter tests.
+%%%%%%%%%%%%%%%%%%
+%
+%
+%
+%
+placer_ligneV1():- placer_jeton(Mat1,['R'],Colonne).
+
+placer_ligneV2():- placer_jeton(Deux,['R'],Colonne),placer_jeton(Deux,['R'],Colonne).
