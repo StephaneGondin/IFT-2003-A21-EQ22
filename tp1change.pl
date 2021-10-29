@@ -141,16 +141,6 @@ jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),
 
 
 
-                             %  append([],[Temporaire,C2,C3,C4,C5,C6,C7],Matrice),   % a modifier, mais cette ligne devra envoyer dans
-                                                                                   % la matrice le choix selon la colone choisie
-                             %  nl,voir(Matrice,'La matrice :  '),nl,   % vision, a enlever
-                            %   %compter_verticale('J',Temporaire,Zero),Zeros is Zero,write(Zeros),   %fonction inclus de min max, sera enlever
-                            %   vgagne('R',Matrice),  %validation de qui gagne
-                            %   vgagne('J',Matrice),   %validation
-                            %   write(Temporaire),  % a enlever
-                            %   jeux_recurrent(C1,C2,C3,C4,C5,C6,C7).  % on va envoyer selon ce que l'ai a choisi
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Transfert_A_matrice est similaire a prepale le tranfert, elle
@@ -335,7 +325,7 @@ inverse([Head|Tail],Body,Acc) :- inverse(Tail,Body,[Head|Acc]).
 % Les parametre d'entrées sont : 7 Liste (M1,M2,M3,M4,M5,M6,M7,) et la
 % Couleur.
 %
-% Cette fonction est automatiquement appelé par le programme jeux.
+% Cette fonction est automatiquement appelé par le programme jeu.
 %
 
 
@@ -368,14 +358,14 @@ heuristique(M1,M2,M3,M4,M5,M6,M7,Valeurheuristique,Couleur,ColoneFinale):-
 
 
 % Fonction prend les listes de colonnes
-% Nous avons besoin des 7 colonnes en entrées et la couleurs est un
-% parametre d'entrée.le parametres
-% ColonneFinale est retournées au client . ValeurHeuristique sera retourné
+% Nous avons besoin des 7 colonnes en entrées et la couleur est un
+% parametre d'entrée.le parametre
+% ColonneFinale est retournée au client . ValeurHeuristique sera retourné
 % aussi.
 %
 % Les parametres de retour sont  : ColonneFinale.
 %
-% Les parametre d'entrées sont : 7 Liste (M1,M2,M3,M4,M5,M6,M7,)
+% Les parametres d'entrées sont : 7 Liste (M1,M2,M3,M4,M5,M6,M7,)
 %
 % Cette fonction est automatiquement appelé par le programme jeux.
 %

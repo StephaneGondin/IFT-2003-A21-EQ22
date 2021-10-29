@@ -141,6 +141,16 @@ jeux_AI(C1,C2,C3,C4,C5,C6,C7):-voirboard(C1,C2,C3,C4,C5,C6,C7),
 
 
 
+                             %  append([],[Temporaire,C2,C3,C4,C5,C6,C7],Matrice),   % a modifier, mais cette ligne devra envoyer dans
+                                                                                   % la matrice le choix selon la colone choisie
+                             %  nl,voir(Matrice,'La matrice :  '),nl,   % vision, a enlever
+                            %   %compter_verticale('J',Temporaire,Zero),Zeros is Zero,write(Zeros),   %fonction inclus de min max, sera enlever
+                            %   vgagne('R',Matrice),  %validation de qui gagne
+                            %   vgagne('J',Matrice),   %validation
+                            %   write(Temporaire),  % a enlever
+                            %   jeux_recurrent(C1,C2,C3,C4,C5,C6,C7).  % on va envoyer selon ce que l'ai a choisi
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Transfert_A_matrice est similaire a prepale le tranfert, elle
